@@ -10,6 +10,15 @@ import {
 } from "lucide-react";
 import { SITE, OMRA_PACKAGES } from "@/lib/constants";
 
+const CLIENTS = [
+  "Banque d'Algérie", "Air Algérie", "Algérie Télécom", "SAIDAL", "EPTV",
+  "SATIM", "ALSTOM", "SOMAF", "ENTMV", "AGRODIV", "CNAC", "ONM",
+  "ENTP", "SETRAM", "PCH", "STPE", "TALA Assurance", "LINDE GAZE",
+  "CRCC", "BATIMETAL", "ALFAPIPE SPA", "SGCI", "SEDIVER Algérie",
+  "ELECTRO INDUSTRIEL", "ZF ALGÉRIE", "MEDITRAM", "TREFAL", "CITEL",
+  "OPGI BOUMERDES", "STAROUAT", "NOVAPHARM", "ONPO", "ETRAG", "AEC",
+];
+
 const IMAGES = {
   istanbul: "/images/istanbul.webp",
   cappadoce: "/images/cappadoce.webp",
@@ -221,6 +230,24 @@ export default function Home() {
             <div className="w-1 h-2 rounded-full bg-white/70" />
           </motion.div>
         </motion.div>
+      </section>
+
+      {/* ── CLIENTS MARQUEE ── */}
+      <section className="bg-white border-b border-[#E8E0D0] py-5 overflow-hidden">
+        <div className="flex items-center gap-4 mb-3 px-6">
+          <div className="h-px flex-1 bg-[#E8E0D0]" />
+          <span className="text-[#8A8A8A] text-xs font-semibold uppercase tracking-widest whitespace-nowrap">Ils nous font confiance</span>
+          <div className="h-px flex-1 bg-[#E8E0D0]" />
+        </div>
+        <div className="relative">
+          <div className="flex gap-8 animate-marquee whitespace-nowrap">
+            {[...CLIENTS, ...CLIENTS].map((c, i) => (
+              <span key={i} className="inline-flex items-center px-5 py-2 bg-[#F5F0E8] rounded-full text-[#4A4A4A] text-sm font-semibold border border-[#E8E0D0] shrink-0 hover:border-[#C9943A] hover:text-[#C9943A] transition-colors duration-200">
+                {c}
+              </span>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ── STATS BAR ── */}
@@ -624,6 +651,36 @@ export default function Home() {
               </div>
             </FadeIn>
           </div>
+        </div>
+      </section>
+
+      {/* ── NOS CLIENTS ── */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <FadeIn className="text-center mb-10">
+            <span className="section-tag"><Users className="w-3.5 h-3.5" /> Entreprises clientes</span>
+            <h2 className="section-title mt-4 mb-2">+50 entreprises algériennes<br />nous font confiance</h2>
+            <p className="text-[#8A8A8A] text-sm">Grands comptes, PME et institutions publiques — Sun Evasion gère vos voyages d&apos;affaires et séminaires.</p>
+          </FadeIn>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {CLIENTS.map((c) => (
+              <div key={c} className="flex items-center justify-center px-4 py-3 bg-[#F5F0E8] rounded-xl border border-[#E8E0D0] hover:border-[#C9943A] hover:bg-white transition-all duration-200 group">
+                <span className="text-[#4A4A4A] group-hover:text-[#C9943A] text-sm font-semibold text-center leading-tight transition-colors">{c}</span>
+              </div>
+            ))}
+          </div>
+          <FadeIn delay={0.2}>
+            <div className="mt-10 text-center">
+              <p className="text-[#8A8A8A] text-sm">Vous souhaitez organiser un voyage d&apos;entreprise ou un séminaire ?</p>
+              <a
+                href={`https://wa.me/${SITE.whatsapp}?text=Bonjour Sun Evasion, je souhaite organiser un voyage d'entreprise`}
+                target="_blank" rel="noopener noreferrer"
+                className="btn-primary mt-4 inline-flex"
+              >
+                <MessageCircle className="w-4 h-4" /> Demande groupe / entreprise
+              </a>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
