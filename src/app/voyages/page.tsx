@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { Check, Clock, Plane, Star, Filter } from "lucide-react";
 import { PACKAGES, DESTINATIONS } from "@/lib/constants";
-import { Button } from "@/components/ui/button";
 
 const FILTERS = [
   { label: "Tous", value: "all" },
@@ -13,55 +13,62 @@ const FILTERS = [
   { label: "🇹🇳 Tunisie", value: "tunisie" },
 ];
 
+const PKG_PHOTOS: Record<string, string> = {
+  "istanbul-5j": "/images/istanbul.webp",
+  "cappadoce-7j": "/images/cappadoce.webp",
+  "antalya-7j": "/images/antalya.webp",
+  "djerba-5j": "/images/djerba.webp",
+  "sousse-7j": "/images/sousse.webp",
+};
+
 export default function VoyagesPage() {
   const [filter, setFilter] = useState("all");
-
   const filtered = filter === "all" ? PACKAGES : PACKAGES.filter((p) => p.destination === filter);
 
   return (
-    <div className="min-h-screen bg-[#0a0e1a] pt-32 pb-24">
-      {/* Header */}
-      <div className="relative overflow-hidden mb-16">
-        <div className="absolute top-1/2 left-1/4 w-80 h-80 rounded-full bg-[#d4a843]/5 blur-3xl -translate-y-1/2" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-gold mb-4">
-              <Plane className="w-4 h-4 text-[#d4a843]" />
-              <span className="text-[#d4a843] text-sm font-medium">Nos Voyages</span>
-            </div>
-            <h1 className="text-5xl sm:text-6xl font-bold text-white mb-4">
-              Tous nos <span className="gradient-gold">séjours</span>
+    <div className="min-h-screen bg-[#FAFAF7]">
+      {/* Hero */}
+      <div className="relative h-72 sm:h-80">
+        <Image src="/images/cappadoce.webp" alt="Voyages Sun Evasion" fill className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/65" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pt-20">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <span className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full border border-white/25 mb-4">
+              <Plane className="w-3.5 h-3.5" /> Nos Voyages
+            </span>
+            <h1 className="font-display text-4xl sm:text-5xl font-bold text-white mb-3">
+              Tous nos séjours
             </h1>
-            <p className="text-white/50 text-xl max-w-xl mx-auto">
-              {PACKAGES.length} voyages disponibles · Départs depuis Alger
+            <p className="text-white/80 text-lg">
+              {PACKAGES.length} voyages · Départs depuis Alger
             </p>
           </motion.div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Filter tabs */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.15 }}
           className="flex items-center gap-3 mb-10 flex-wrap"
         >
-          <Filter className="w-4 h-4 text-white/30" />
+          <Filter className="w-4 h-4 text-[#8A8A8A]" />
           {FILTERS.map((f) => (
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                 filter === f.value
-                  ? "bg-gradient-to-r from-[#d4a843] to-[#f0c96e] text-black"
-                  : "glass text-white/60 hover:text-white"
+                  ? "bg-gradient-to-r from-[#A07020] to-[#C9943A] text-white shadow-md"
+                  : "bg-white border border-[#E8E0D0] text-[#4A4A4A] hover:border-[#C9943A] hover:text-[#C9943A]"
               }`}
             >
               {f.label}
             </button>
           ))}
-          <span className="ml-auto text-white/30 text-sm">{filtered.length} résultats</span>
+          <span className="ml-auto text-[#8A8A8A] text-sm">{filtered.length} résultats</span>
         </motion.div>
 
         {/* Grid */}
@@ -69,88 +76,100 @@ export default function VoyagesPage() {
           <AnimatePresence mode="popLayout">
             {filtered.map((pkg, i) => {
               const dest = DESTINATIONS.find((d) => d.id === pkg.destination);
+              const photo = PKG_PHOTOS[pkg.id] || "/images/istanbul.webp";
               return (
                 <motion.div
                   key={pkg.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3, delay: i * 0.05 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3, delay: i * 0.04 }}
                   className="relative"
                 >
                   {pkg.popular && (
-                    <div className="absolute -top-3 left-6 z-10">
-                      <span className="px-3 py-0.5 rounded-full bg-gradient-to-r from-[#d4a843] to-[#f0c96e] text-black text-xs font-bold">
+                    <div className="absolute -top-3 left-5 z-10">
+                      <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#A07020] to-[#C9943A] text-white text-xs font-bold shadow-md">
                         ⭐ Populaire
                       </span>
                     </div>
                   )}
                   <div
-                    className={`h-full rounded-3xl border overflow-hidden bg-gradient-to-b from-[#0f172a] to-[#0a0e1a] transition-all duration-300 card-glow ${
-                      pkg.popular
-                        ? "border-[#d4a843]/30 shadow-[0_0_40px_rgba(212,168,67,0.1)]"
-                        : "border-white/5 hover:border-white/10"
+                    className={`card h-full flex flex-col ${
+                      pkg.popular ? "ring-2 ring-[#C9943A]/30" : ""
                     }`}
                   >
-                    {/* Destination color strip */}
-                    <div
-                      className="h-1 w-full"
-                      style={{
-                        background: `linear-gradient(90deg, ${dest?.accent || "#d4a843"}, rgba(212,168,67,0.3))`,
-                      }}
-                    />
-
-                    <div className="p-6 border-b border-white/5">
-                      <span className="text-xs text-white/30 uppercase tracking-widest">
-                        {dest?.flag} {dest?.name}
-                      </span>
-                      <div className="flex items-start justify-between mt-1 mb-2">
-                        <h3 className="text-xl font-bold text-white">{pkg.name}</h3>
-                        <span className="glass px-2 py-0.5 rounded-full text-xs text-[#d4a843] ml-2 shrink-0">
+                    {/* Photo */}
+                    <div className="relative h-48 overflow-hidden">
+                      <Image
+                        src={photo}
+                        alt={pkg.name}
+                        fill
+                        className="object-cover img-zoom"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                      <div className="absolute bottom-3 left-3">
+                        <span className="text-white/90 text-xs font-medium">
+                          {dest?.flag} {dest?.name}
+                        </span>
+                      </div>
+                      <div className="absolute top-3 right-3">
+                        <span className="bg-white/90 text-[#4A4A4A] text-xs font-semibold px-2.5 py-1 rounded-full">
                           {pkg.category}
                         </span>
                       </div>
-                      <div className="flex gap-4 text-xs text-white/40">
+                    </div>
+
+                    <div className="p-5 flex flex-col flex-1">
+                      <h3 className="font-display text-lg font-bold text-[#1A1A1A] mb-1.5">
+                        {pkg.name}
+                      </h3>
+                      <div className="flex gap-4 text-xs text-[#8A8A8A] mb-3">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" /> {pkg.duration}
                         </span>
                         <span className="flex items-center gap-1">
-                          <Plane className="w-3 h-3" /> Alger
+                          <Plane className="w-3 h-3" /> Départ Alger
                         </span>
                       </div>
-                    </div>
 
-                    <div className="px-6 py-3 border-b border-white/5">
-                      <div className="flex items-baseline gap-1.5">
+                      {/* Price */}
+                      <div className="flex items-baseline gap-1.5 mb-4 pb-4 border-b border-[#E8E0D0]">
                         <span className="text-2xl font-bold gradient-gold">
                           {pkg.price.toLocaleString("fr-DZ")}
                         </span>
-                        <span className="text-white/30 text-xs">DZD / pers.</span>
+                        <span className="text-[#8A8A8A] text-xs">DZD / pers.</span>
                       </div>
-                    </div>
 
-                    <div className="p-6">
-                      <div className="flex flex-wrap gap-1.5 mb-4">
-                        {pkg.highlights.map((h) => (
-                          <span key={h} className="px-2 py-0.5 rounded text-xs glass text-white/50 flex items-center gap-1">
-                            <Star className="w-2.5 h-2.5 text-[#d4a843] fill-[#d4a843]" /> {h}
+                      {/* Highlights */}
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {pkg.highlights.slice(0, 3).map((h) => (
+                          <span
+                            key={h}
+                            className="flex items-center gap-1 px-2 py-0.5 rounded bg-[#F5F0E8] text-[#4A4A4A] text-xs"
+                          >
+                            <Star className="w-2.5 h-2.5 text-[#C9943A] fill-[#C9943A]" /> {h}
                           </span>
                         ))}
                       </div>
-                      <ul className="space-y-1.5 mb-5">
+
+                      {/* Includes */}
+                      <ul className="space-y-1.5 mb-5 flex-1">
                         {pkg.includes.slice(0, 3).map((inc) => (
-                          <li key={inc} className="flex items-start gap-2 text-xs text-white/50">
-                            <Check className="w-3 h-3 text-green-400 mt-0.5 shrink-0" /> {inc}
+                          <li key={inc} className="flex items-start gap-2 text-xs text-[#4A4A4A]">
+                            <Check className="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0" /> {inc}
                           </li>
                         ))}
                         {pkg.includes.length > 3 && (
-                          <li className="text-xs text-white/20 ml-5">+{pkg.includes.length - 3} inclus...</li>
+                          <li className="text-xs text-[#8A8A8A] ml-5">
+                            +{pkg.includes.length - 3} autres inclus
+                          </li>
                         )}
                       </ul>
-                      <Button variant={pkg.popular ? "gold" : "outline"} className="w-full" size="sm" asChild>
-                        <Link href={`/contact?package=${pkg.id}`}>Réserver ce séjour</Link>
-                      </Button>
+
+                      <Link href={`/contact?package=${pkg.id}`} className="btn-primary w-full justify-center text-sm">
+                        Réserver ce séjour
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
