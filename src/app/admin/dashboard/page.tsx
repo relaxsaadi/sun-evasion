@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Sun, LogOut, Users, Clock, CheckCircle, Phone, Mail,
@@ -9,6 +8,7 @@ import {
   ExternalLink, BarChart2,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
 type Booking = {
   id: string;
@@ -53,7 +53,6 @@ function BarChart({ data }: { data: { label: string; value: number; color: strin
 export default function AdminDashboard() {
   const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [user, setUser] = useState<{ email?: string; name?: string; avatar?: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [search, setSearch] = useState("");
@@ -65,13 +64,6 @@ export default function AdminDashboard() {
   useEffect(() => {
     const init = async () => {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { router.push("/login"); return; }
-      setUser({
-        email: session.user.email ?? undefined,
-        name: session.user.user_metadata?.full_name,
-        avatar: session.user.user_metadata?.avatar_url,
-      });
       const { data } = await supabase
         .from("bookings")
         .select("*")
@@ -80,7 +72,7 @@ export default function AdminDashboard() {
       setLoading(false);
     };
     init();
-  }, [router]);
+  }, []);
 
   const updateStatus = async (id: string, status: Booking["status"]) => {
     const supabase = createClient();
@@ -89,8 +81,7 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await fetch("/api/admin/logout", { method: "POST" });
     router.push("/login");
   };
 
@@ -209,12 +200,11 @@ export default function AdminDashboard() {
           </div>
           {/* User */}
           <div className="flex items-center gap-3 shrink-0">
-            {user?.avatar && (
-              <img src={user.avatar} alt="" className="w-8 h-8 rounded-full border-2 border-[#E8E0D0]" />
-            )}
-            <span className="text-[#4A4A4A] text-sm hidden lg:block truncate max-w-40">{user?.email}</span>
-            <button onClick={handleLogout} className="p-2 text-[#8A8A8A] hover:text-[#1A1A1A] transition-colors">
-              <LogOut className="w-4 h-4" />
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center gap-2 text-sm text-[#8A8A8A] hover:text-[#1A1A1A] transition-colors px-3 py-1.5 rounded-lg hover:bg-[#F5F0E8]"
+            >
+              <LogOut className="w-4 h-4" /> Déconnexion
             </button>
           </div>
         </div>

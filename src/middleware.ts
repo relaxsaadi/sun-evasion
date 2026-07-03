@@ -1,48 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
 
-const ALLOWED_EMAILS = ["kostgroupe@gmail.com"];
+async function makeToken(secret: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, encoder.encode("sun-evasion-admin"));
+  return Buffer.from(sig).toString("hex");
+}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Only protect /admin routes
   if (!pathname.startsWith("/admin")) {
     return NextResponse.next();
   }
 
-  const response = NextResponse.next();
+  const token = request.cookies.get("admin_token")?.value;
+  const secret = process.env.ADMIN_PASSWORD;
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options);
-          });
-        },
-      },
-    }
-  );
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  // Not logged in → redirect to login
-  if (!user) {
+  if (!token || !secret) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Logged in but not authorized → redirect to home
-  if (!ALLOWED_EMAILS.includes(user.email ?? "")) {
-    return NextResponse.redirect(new URL("/?error=unauthorized", request.url));
+  const expected = await makeToken(secret);
+  if (token !== expected) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
