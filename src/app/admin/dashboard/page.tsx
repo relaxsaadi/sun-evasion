@@ -5,9 +5,10 @@ import { motion } from "framer-motion";
 import {
   Sun, LogOut, Users, Clock, CheckCircle, Phone, Mail,
   Calendar, Plane, Search, TrendingUp, Globe, RefreshCw,
-  ExternalLink, BarChart2,
+  ExternalLink, BarChart2, Download, MessageCircle,
 } from "lucide-react";
 import PartenariatsHotels from "@/components/admin/PartenariatsHotels";
+import EmailTemplates from "@/components/admin/EmailTemplates";
 import { createClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
@@ -24,7 +25,7 @@ type Booking = {
   status: "pending" | "contacted" | "confirmed" | "cancelled";
 };
 
-type Tab = "overview" | "bookings" | "veille" | "partenariats";
+type Tab = "overview" | "bookings" | "calendrier" | "veille" | "partenariats" | "emails";
 
 const STATUS_CONFIG = {
   pending:   { label: "En attente", color: "text-amber-600 bg-amber-50 border-amber-200" },
@@ -86,6 +87,30 @@ export default function AdminDashboard() {
     router.push("/login");
   };
 
+  const exportCSV = () => {
+    const headers = ["Nom","Téléphone","Email","Forfait","Date départ","Passagers","Statut","Date demande","Message"];
+    const rows = bookings.map(b => [
+      b.name, b.phone, b.email||"", b.package_name||"",
+      b.departure_date||"", b.passengers, b.status,
+      new Date(b.created_at).toLocaleDateString("fr-FR"),
+      (b.message||"").replace(/,/g," "),
+    ]);
+    const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
+    const blob = new Blob(["﻿"+csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url;
+    a.download = `reservations-sun-evasion-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+
+  const waMessage = (b: Booking) => {
+    const pkg = b.package_name || "votre voyage";
+    const date = b.departure_date ? ` prévu le ${b.departure_date}` : "";
+    return encodeURIComponent(
+      `Bonjour ${b.name} 👋\n\nJe suis de l'équipe Sun Evasion. Merci pour votre demande concernant *${pkg}*${date}.\n\nNous avons bien reçu votre réservation et nous allons vous contacter très prochainement pour confirmer les détails et les modalités de paiement.\n\nEn attendant, n'hésitez pas à nous poser vos questions ici.\n\nCordialement,\nSun Evasion 🌟`
+    );
+  };
+
   const stats = useMemo(() => {
     const contacted = bookings.filter((b) => b.status === "contacted").length;
     const confirmed = bookings.filter((b) => b.status === "confirmed").length;
@@ -102,6 +127,10 @@ export default function AdminDashboard() {
       )
     ).length;
     const omra = bookings.filter((b) => b.package_name?.toLowerCase().includes("omra")).length;
+    const AVG_PRICE_DZD = 150000;
+    const estimatedRevenue = confirmed * AVG_PRICE_DZD *
+      (bookings.filter(b=>b.status==="confirmed").reduce((s,b)=>s+b.passengers,0) /
+       Math.max(bookings.filter(b=>b.status==="confirmed").length,1));
     return {
       total: bookings.length,
       pending,
@@ -112,9 +141,9 @@ export default function AdminDashboard() {
       tunisie,
       omra,
       other: Math.max(bookings.length - turquie - tunisie - omra, 0),
-      conversionRate: bookings.length
-        ? Math.round((confirmed / bookings.length) * 100)
-        : 0,
+      conversionRate: bookings.length ? Math.round((confirmed / bookings.length) * 100) : 0,
+      estimatedRevenue: Math.round(estimatedRevenue),
+      totalPassengers: bookings.filter(b=>b.status==="confirmed").reduce((s,b)=>s+b.passengers,0),
     };
   }, [bookings]);
 
@@ -153,10 +182,12 @@ export default function AdminDashboard() {
   };
 
   const TABS: { id: Tab; label: string }[] = [
-    { id: "overview", label: "Vue d'ensemble" },
-    { id: "bookings", label: "Réservations" },
-    { id: "veille", label: "Veille marché" },
-    { id: "partenariats", label: "🤝 Partenariats" },
+    { id: "overview",      label: "Vue d'ensemble" },
+    { id: "bookings",      label: "Réservations" },
+    { id: "calendrier",    label: "📅 Calendrier" },
+    { id: "emails",        label: "✉️ Templates" },
+    { id: "partenariats",  label: "🤝 Partenariats" },
+    { id: "veille",        label: "Veille marché" },
   ];
 
   if (loading) {
@@ -239,12 +270,13 @@ export default function AdminDashboard() {
             </div>
 
             {/* KPI cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
               {[
                 { icon: Users, label: "Total réservations", value: stats.total, color: "#C9943A", bg: "#FDF8F0" },
                 { icon: Clock, label: "En attente", value: stats.pending, color: "#F59E0B", bg: "#FFFBEB" },
                 { icon: CheckCircle, label: "Confirmées", value: stats.confirmed, color: "#10B981", bg: "#F0FDF4" },
                 { icon: TrendingUp, label: "Taux conversion", value: `${stats.conversionRate}%`, color: "#0EA5E9", bg: "#F0F9FF" },
+                { icon: BarChart2, label: "Revenus est.", value: stats.estimatedRevenue > 0 ? `${(stats.estimatedRevenue/1000).toFixed(0)}k DA` : "—", color: "#8B5CF6", bg: "#F5F3FF" },
               ].map((s, i) => (
                 <motion.div
                   key={s.label}
@@ -364,6 +396,9 @@ export default function AdminDashboard() {
                 <p className="text-[#8A8A8A] text-sm mt-1">{bookings.length} demandes au total</p>
               </div>
               <div className="sm:ml-auto flex gap-3 flex-wrap">
+                <button onClick={exportCSV} className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#E8E0D0] text-sm text-[#4A4A4A] hover:border-[#C9943A] hover:text-[#C9943A] transition-all font-medium">
+                  <Download className="w-4 h-4" /> Exporter CSV
+                </button>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8A8A]" />
                   <input
@@ -500,12 +535,12 @@ export default function AdminDashboard() {
                             <option value="cancelled">Annulé</option>
                           </select>
                           <a
-                            href={`https://wa.me/${booking.phone.replace(/\D/g, "").replace(/^0/, "213")}?text=Bonjour ${encodeURIComponent(booking.name)}, suite à votre demande Sun Evasion pour ${booking.package_name || "votre voyage"}...`}
+                            href={`https://wa.me/${booking.phone.replace(/\D/g,"").replace(/^0/,"213")}?text=${waMessage(booking)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 hover:bg-emerald-100 transition-colors whitespace-nowrap"
+                            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 hover:bg-emerald-100 transition-colors whitespace-nowrap"
                           >
-                            WhatsApp →
+                            <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
                           </a>
                         </div>
                       </div>
@@ -686,6 +721,75 @@ export default function AdminDashboard() {
                 Après redéploiement, le bouton &quot;Lancer l&apos;analyse&quot; sera pleinement fonctionnel.
               </p>
             </div>
+          </motion.div>
+        )}
+
+        {/* ── CALENDRIER DÉPARTS ── */}
+        {activeTab === "calendrier" && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <div className="mb-8">
+              <h1 className="font-display text-2xl font-bold text-[#1A1A1A]">Calendrier des départs</h1>
+              <p className="text-[#8A8A8A] text-sm mt-1">Réservations confirmées groupées par mois de départ</p>
+            </div>
+            {(() => {
+              const confirmed = bookings.filter(b => b.status === "confirmed" && b.departure_date);
+              const grouped: Record<string, typeof confirmed> = {};
+              confirmed.forEach(b => {
+                const key = b.departure_date!.slice(0, 7);
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(b);
+              });
+              const months = Object.keys(grouped).sort();
+              if (!months.length) return (
+                <div className="text-center py-20 text-[#8A8A8A]">
+                  <Calendar className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                  <p>Aucune réservation confirmée avec date de départ</p>
+                </div>
+              );
+              return (
+                <div className="space-y-6">
+                  {months.map(m => {
+                    const [year, month] = m.split("-");
+                    const label = new Date(+year, +month-1).toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+                    return (
+                      <div key={m} className="bg-white border border-[#E8E0D0] rounded-2xl overflow-hidden">
+                        <div className="px-6 py-4 bg-gradient-to-r from-[#C9943A]/10 to-transparent border-b border-[#E8E0D0] flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-[#C9943A]" />
+                            <span className="font-semibold text-[#1A1A1A] capitalize">{label}</span>
+                          </div>
+                          <span className="text-xs bg-[#C9943A] text-white px-2.5 py-1 rounded-full font-medium">{grouped[m].length} départ{grouped[m].length>1?"s":""}</span>
+                        </div>
+                        <div className="divide-y divide-[#F0EAE0]">
+                          {grouped[m].map(b => (
+                            <div key={b.id} className="px-6 py-3 flex items-center gap-4">
+                              <div className="w-8 h-8 rounded-full bg-[#F5F0E8] flex items-center justify-center text-[#C9943A] font-bold text-sm shrink-0">
+                                {b.name.charAt(0).toUpperCase()}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-[#1A1A1A]">{b.name}</p>
+                                <p className="text-xs text-[#8A8A8A] truncate">{b.package_name || "—"} · {b.passengers} pers.</p>
+                              </div>
+                              <div className="text-right shrink-0">
+                                <p className="text-xs font-medium text-[#1A1A1A]">{b.departure_date}</p>
+                                <a href={`https://wa.me/${b.phone.replace(/\D/g,"").replace(/^0/,"213")}?text=${waMessage(b)}`} target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-600 hover:underline">{b.phone}</a>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </motion.div>
+        )}
+
+        {/* ── EMAIL TEMPLATES ── */}
+        {activeTab === "emails" && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <EmailTemplates />
           </motion.div>
         )}
 
