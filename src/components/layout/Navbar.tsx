@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone, MessageCircle } from "lucide-react";
 import { SITE } from "@/lib/constants";
+import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
   { label: "Accueil", href: "/" },
@@ -16,8 +17,11 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
