@@ -7,6 +7,7 @@ import {
   Calendar, Plane, Search, TrendingUp, Globe, RefreshCw,
   ExternalLink, BarChart2,
 } from "lucide-react";
+import PartenariatsHotels from "@/components/admin/PartenariatsHotels";
 import { createClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
@@ -23,7 +24,7 @@ type Booking = {
   status: "pending" | "contacted" | "confirmed" | "cancelled";
 };
 
-type Tab = "overview" | "bookings" | "veille";
+type Tab = "overview" | "bookings" | "veille" | "partenariats";
 
 const STATUS_CONFIG = {
   pending:   { label: "En attente", color: "text-amber-600 bg-amber-50 border-amber-200" },
@@ -155,6 +156,7 @@ export default function AdminDashboard() {
     { id: "overview", label: "Vue d'ensemble" },
     { id: "bookings", label: "Réservations" },
     { id: "veille", label: "Veille marché" },
+    { id: "partenariats", label: "🤝 Partenariats" },
   ];
 
   if (loading) {
@@ -684,6 +686,13 @@ export default function AdminDashboard() {
                 Après redéploiement, le bouton &quot;Lancer l&apos;analyse&quot; sera pleinement fonctionnel.
               </p>
             </div>
+          </motion.div>
+        )}
+
+        {/* ── PARTENARIATS HÔTELS ── */}
+        {activeTab === "partenariats" && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <PartenariatsHotels />
           </motion.div>
         )}
       </div>
