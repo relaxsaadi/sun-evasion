@@ -42,16 +42,29 @@ export async function POST(req: NextRequest) {
     const items = await dataRes.json();
 
     const hotels = (Array.isArray(items) ? items : [])
-      .map((p: Record<string, unknown>) => ({
-        name: p.title || p.name,
-        address: p.address,
-        phone: p.phone,
-        website: p.website,
-        rating: p.totalScore,
-        reviewCount: p.reviewsCount,
-        category: p.categoryName,
-        googleUrl: p.url,
-      }))
+      .map((p: Record<string, unknown>) => {
+        const imgs = p.images as { imageUrl?: string }[] | undefined;
+        const imageUrl =
+          (p.imageUrl as string) ||
+          (imgs && imgs[0]?.imageUrl) ||
+          null;
+        const priceLevel = p.priceLevel as string | undefined;
+        const price = p.price as string | undefined;
+        return {
+          name: p.title || p.name,
+          address: p.address,
+          phone: p.phone,
+          website: p.website,
+          rating: p.totalScore,
+          reviewCount: p.reviewsCount,
+          category: p.categoryName,
+          googleUrl: p.url,
+          imageUrl,
+          priceLabel: price || priceLevel || null,
+          neighborhood: p.neighborhood || p.subTitle || null,
+          openingHours: p.openingHours || null,
+        };
+      })
       .filter((h) => h.name);
 
     return NextResponse.json({ hotels, runId });

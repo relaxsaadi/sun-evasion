@@ -321,13 +321,17 @@ type ScannedHotel = {
   reviewCount?: number;
   category?: string;
   googleUrl?: string;
+  imageUrl?: string | null;
+  priceLabel?: string | null;
+  neighborhood?: string | null;
+  openingHours?: unknown;
 };
 
 export default function PartenariatsHotels() {
   const [country, setCountry] = useState("all");
   const [city, setCity] = useState("all");
   const [minStars, setMinStars] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(300);
+  const [maxPrice, setMaxPrice] = useState(1000);
   const [onlyPartners, setOnlyPartners] = useState(false);
   const [emailHotel, setEmailHotel] = useState<HotelType | null>(null);
   const [hotels, setHotels] = useState<HotelType[]>(HOTELS);
@@ -372,7 +376,7 @@ export default function PartenariatsHotels() {
       if (country !== "all" && h.country !== country) return false;
       if (city !== "all" && h.city !== city) return false;
       if (h.stars < minStars) return false;
-      if (h.pricePerNight > maxPrice) return false;
+      if (maxPrice < 1000 && h.pricePerNight > maxPrice) return false;
       if (onlyPartners && !h.hasContract) return false;
       return true;
     });
@@ -475,70 +479,122 @@ export default function PartenariatsHotels() {
 
         {scanResults.length > 0 && (
           <div className="mt-5">
-            <p className="text-xs font-semibold text-[#4A4A4A] mb-3">
+            <p className="text-xs font-semibold text-[#4A4A4A] mb-4">
               {scanResults.length} hôtel{scanResults.length > 1 ? "s" : ""} trouvé{scanResults.length > 1 ? "s" : ""}
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {scanResults.map((h, i) => (
-                <div key={i} className="border border-[#E8E0D0] rounded-xl p-4 bg-[#FAFAF7]">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <p className="text-sm font-semibold text-[#1A1A1A] leading-tight">{h.name}</p>
+                <div key={i} className="bg-white border border-[#E8E0D0] rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
+                  {/* Photo */}
+                  <div className="relative h-40 overflow-hidden bg-[#F0EBE0]">
+                    {h.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={h.imageUrl} alt={h.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Hotel className="w-12 h-12 text-[#C9943A] opacity-30" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     {h.rating && (
-                      <span className="shrink-0 text-xs font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
-                        ★ {h.rating.toFixed(1)}
-                      </span>
+                      <div className="absolute top-3 right-3">
+                        <span className="bg-white/90 text-[#1A1A1A] text-xs font-bold px-2.5 py-1 rounded-full">
+                          ★ {Number(h.rating).toFixed(1)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <p className="text-white font-semibold text-sm leading-tight">{h.name}</p>
+                      {(h.neighborhood || h.address) && (
+                        <p className="text-white/75 text-xs flex items-center gap-1 mt-0.5 truncate">
+                          <MapPin className="w-3 h-3 shrink-0" />
+                          {h.neighborhood || h.address}
+                        </p>
+                      )}
+                    </div>
+                    {h.priceLabel && (
+                      <div className="absolute bottom-3 right-3 text-right">
+                        <p className="text-white font-bold text-sm">{h.priceLabel}</p>
+                      </div>
                     )}
                   </div>
-                  {h.address && (
-                    <p className="text-xs text-[#8A8A8A] mb-2 flex items-start gap-1">
-                      <MapPin className="w-3 h-3 shrink-0 mt-0.5" /> {h.address}
-                    </p>
-                  )}
-                  {h.category && (
-                    <p className="text-xs text-[#C9943A] mb-2">{h.category}</p>
-                  )}
-                  {h.reviewCount && (
-                    <p className="text-xs text-[#8A8A8A] mb-3">{h.reviewCount.toLocaleString("fr")} avis</p>
-                  )}
-                  <div className="flex flex-wrap gap-2">
-                    {h.phone && (
-                      <a
-                        href={`tel:${h.phone}`}
-                        className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-[#E8E0D0] text-[#4A4A4A] hover:border-[#C9943A] hover:text-[#C9943A] transition-all"
-                      >
-                        <Phone className="w-3 h-3" /> {h.phone}
-                      </a>
+
+                  <div className="p-4">
+                    {/* Rating + reviews */}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        {h.rating && (
+                          <>
+                            <div className="flex gap-0.5">
+                              {Array.from({ length: 5 }).map((_, si) => (
+                                <Star key={si} className={`w-3 h-3 ${si < Math.round(Number(h.rating) / 2) ? "fill-amber-400 text-amber-400" : "text-[#E8E0D0]"}`} />
+                              ))}
+                            </div>
+                            <span className="text-xs font-semibold text-[#1A1A1A]">{Number(h.rating).toFixed(1)}/5</span>
+                          </>
+                        )}
+                        {h.reviewCount && (
+                          <span className="text-xs text-[#8A8A8A]">({Number(h.reviewCount).toLocaleString("fr")} avis)</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Category tag */}
+                    {h.category && (
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        <span className="px-2 py-0.5 bg-[#F5F0E8] text-[#C9943A] text-xs rounded-full font-medium">
+                          {h.category}
+                        </span>
+                      </div>
                     )}
-                    {h.website && (
-                      <a
-                        href={h.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-[#E8E0D0] text-[#4A4A4A] hover:border-[#C9943A] hover:text-[#C9943A] transition-all"
-                      >
-                        <Globe className="w-3 h-3" /> Site web
-                      </a>
+
+                    {/* Address */}
+                    {h.address && (
+                      <p className="text-xs text-[#4A4A4A] leading-relaxed mb-3 line-clamp-2 flex items-start gap-1">
+                        <MapPin className="w-3 h-3 shrink-0 mt-0.5 text-[#C9943A]" />
+                        {h.address}
+                      </p>
                     )}
-                    {h.googleUrl && (
-                      <a
-                        href={h.googleUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-[#E8E0D0] text-[#4A4A4A] hover:border-[#C9943A] hover:text-[#C9943A] transition-all"
-                      >
-                        <ExternalLink className="w-3 h-3" /> Google Maps
-                      </a>
-                    )}
-                    {h.phone && (
-                      <a
-                        href={`https://wa.me/${h.phone.replace(/\D/g, "")}?text=${encodeURIComponent("Bonjour, je suis de Sun Evasion (agence de voyage algérienne). Je souhaite discuter d'un partenariat hôtelier.")}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-all"
-                      >
-                        <Send className="w-3 h-3" /> WhatsApp
-                      </a>
-                    )}
+
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2 border-t border-[#E8E0D0] flex-wrap">
+                      {h.website && (
+                        <a href={h.website} target="_blank" rel="noopener noreferrer"
+                          className="p-2 rounded-lg border border-[#E8E0D0] text-[#8A8A8A] hover:text-[#C9943A] hover:border-[#C9943A] transition-all"
+                          title="Site web">
+                          <Globe className="w-4 h-4" />
+                        </a>
+                      )}
+                      {h.phone && (
+                        <a href={`tel:${h.phone}`}
+                          className="p-2 rounded-lg border border-[#E8E0D0] text-[#8A8A8A] hover:text-[#C9943A] hover:border-[#C9943A] transition-all"
+                          title={h.phone}>
+                          <Phone className="w-4 h-4" />
+                        </a>
+                      )}
+                      {h.googleUrl && (
+                        <a href={h.googleUrl} target="_blank" rel="noopener noreferrer"
+                          className="p-2 rounded-lg border border-[#E8E0D0] text-[#8A8A8A] hover:text-[#C9943A] hover:border-[#C9943A] transition-all"
+                          title="Google Maps">
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      )}
+                      {h.phone && (
+                        <a
+                          href={`https://wa.me/${h.phone.replace(/\D/g, "")}?text=${encodeURIComponent("Bonjour, je suis de Sun Evasion (agence de voyage algérienne). Je souhaite discuter d'un partenariat hôtelier.")}`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-all text-xs font-medium"
+                        >
+                          <Send className="w-3.5 h-3.5" /> WhatsApp
+                        </a>
+                      )}
+                      {!h.phone && h.googleUrl && (
+                        <a href={h.googleUrl} target="_blank" rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg btn-primary text-xs font-medium">
+                          <ExternalLink className="w-3.5 h-3.5" /> Voir sur Maps
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -608,12 +664,12 @@ export default function PartenariatsHotels() {
           {/* Price */}
           <div>
             <label className="block text-xs font-medium text-[#4A4A4A] mb-1.5">
-              Prix max B2B : {maxPrice}€/nuit
+              Prix max B2B : {maxPrice >= 1000 ? "Tous" : `${maxPrice}€/nuit`}
             </label>
             <input
               type="range"
               min={50}
-              max={300}
+              max={1000}
               step={10}
               value={maxPrice}
               onChange={(e) => setMaxPrice(+e.target.value)}
