@@ -9,10 +9,12 @@ import {
   Loader2, ArrowRight, Shield, Clock, Star
 } from "lucide-react";
 import { SITE, PACKAGES, OMRA_PACKAGES } from "@/lib/constants";
+import { useLang } from "@/contexts/LangContext";
 
 const ALL_PACKAGES = [...PACKAGES, ...OMRA_PACKAGES];
 
 function ContactForm() {
+  const { t } = useLang();
   const searchParams = useSearchParams();
   const prePackage = searchParams.get("package") || "";
 
@@ -48,16 +50,16 @@ function ContactForm() {
         <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
           <CheckCircle className="w-10 h-10 text-green-600" />
         </div>
-        <h3 className="font-display text-2xl font-bold text-[#1A1A1A] mb-3">Demande envoyée !</h3>
+        <h3 className="font-display text-2xl font-bold text-[#1A1A1A] mb-3">{t("contact_success_title")}</h3>
         <p className="text-[#4A4A4A] max-w-sm mx-auto mb-6">
-          Merci <strong>{form.name}</strong>. Notre équipe vous contacte sous 2h.
+          {t("contact_success_desc")}
         </p>
         <a
           href={`https://wa.me/${SITE.whatsapp}?text=Bonjour, j'ai rempli le formulaire de contact sur votre site`}
           target="_blank" rel="noopener noreferrer"
           className="btn-primary inline-flex"
         >
-          <MessageCircle className="w-4 h-4" /> Confirmer sur WhatsApp
+          <MessageCircle className="w-4 h-4" /> {t("contact_success_wa")}
         </a>
       </motion.div>
     );
@@ -67,88 +69,90 @@ function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid sm:grid-cols-2 gap-5">
         <div>
-          <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Nom complet *</label>
+          <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("contact_name")}</label>
           <input name="name" required value={form.name} onChange={handleChange}
             placeholder="Mohamed Benali" className="form-input" />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Téléphone *</label>
+          <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("contact_phone")}</label>
           <input name="phone" required value={form.phone} onChange={handleChange}
             placeholder="+213 7XX XXX XXX" className="form-input" />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Email</label>
+        <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("contact_email")}</label>
         <input name="email" type="email" value={form.email} onChange={handleChange}
           placeholder="votre@email.com" className="form-input" />
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Voyage souhaité</label>
+        <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("contact_voyage")}</label>
         <select name="packageId" value={form.packageId} onChange={handleChange} className="form-input">
-          <option value="">— Choisir un séjour —</option>
-          <optgroup label="🇹🇷 Turquie">
+          <option value="">{t("contact_voyage_ph")}</option>
+          <optgroup label={t("contact_turkey_group")}>
             {PACKAGES.filter(p => p.destination === "turquie").map(p => (
               <option key={p.id} value={p.id}>{p.name} · {p.price.toLocaleString("fr-DZ")} DA</option>
             ))}
           </optgroup>
-          <optgroup label="🇹🇳 Tunisie">
+          <optgroup label={t("contact_tunisia_group")}>
             {PACKAGES.filter(p => p.destination === "tunisie").map(p => (
               <option key={p.id} value={p.id}>{p.name} · {p.price.toLocaleString("fr-DZ")} DA</option>
             ))}
           </optgroup>
-          <optgroup label="🕌 Omra">
+          <optgroup label={t("contact_omra_group")}>
             {OMRA_PACKAGES.map(p => (
               <option key={p.id} value={p.id}>{p.name} · {p.price} DA</option>
             ))}
           </optgroup>
-          <option value="custom">✨ Sur mesure / Autre</option>
+          <option value="custom">{t("contact_custom")}</option>
         </select>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-5">
         <div>
-          <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Date de départ</label>
+          <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("contact_depart")}</label>
           <input name="departureDate" type="date" value={form.departureDate}
             onChange={handleChange} className="form-input" />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Voyageurs</label>
+          <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("contact_travelers")}</label>
           <select name="passengers" value={form.passengers} onChange={handleChange} className="form-input">
             {[1,2,3,4,5,6,7,8].map(n => (
-              <option key={n} value={n}>{n} personne{n > 1 ? "s" : ""}</option>
+              <option key={n} value={n}>{n} {n > 1 ? t("contact_persons") : t("contact_person")}</option>
             ))}
-            <option value="9">9+ personnes (groupe)</option>
+            <option value="9">{t("contact_group")}</option>
           </select>
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Message / Demandes spéciales</label>
+        <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("contact_message")}</label>
         <textarea name="message" rows={3} value={form.message} onChange={handleChange}
-          placeholder="Budget, chambre double, lit bébé, régime alimentaire..." className="form-input resize-none" />
+          placeholder={t("contact_message_ph")} className="form-input resize-none" />
       </div>
 
       {status === "error" && (
         <p className="text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-xl p-3">
-          Une erreur est survenue. Contactez-nous directement sur WhatsApp.
+          {t("contact_error")}
         </p>
       )}
 
       <button type="submit" disabled={status === "loading"}
         className="btn-primary w-full justify-center text-base !py-3.5 disabled:opacity-60 disabled:cursor-not-allowed">
         {status === "loading"
-          ? <><Loader2 className="w-5 h-5 animate-spin" /> Envoi en cours...</>
-          : <><Send className="w-4 h-4" /> Envoyer ma demande <ArrowRight className="w-4 h-4" /></>
+          ? <><Loader2 className="w-5 h-5 animate-spin" /> {t("contact_sending")}</>
+          : <><Send className="w-4 h-4" /> {t("contact_submit")} <ArrowRight className="w-4 h-4" /></>
         }
       </button>
-      <p className="text-center text-[#8A8A8A] text-xs">Devis gratuit · Réponse garantie sous 2h · Sans engagement</p>
+      <p className="text-center text-[#8A8A8A] text-xs">{t("contact_footer_text")}</p>
     </form>
   );
 }
 
 export default function ContactPage() {
+  const { t } = useLang();
+
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
 
@@ -160,12 +164,12 @@ export default function ContactPage() {
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pt-16">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/25 rounded-full px-4 py-1.5 text-white text-sm font-medium mb-4">
-              <Send className="w-3.5 h-3.5 text-[#E8B85A]" /> Réservation en ligne
+              <Send className="w-3.5 h-3.5 text-[#E8B85A]" /> {t("contact_hero_badge")}
             </div>
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-white leading-tight">
-              Réservez votre <span className="text-[#E8B85A]">voyage</span>
+              {t("contact_hero_title_1")} <span className="text-[#E8B85A]">{t("contact_hero_title_gold")}</span>
             </h1>
-            <p className="text-white/80 mt-3 text-lg">Devis gratuit · Réponse sous 2h · Tout inclus</p>
+            <p className="text-white/80 mt-3 text-lg">{t("contact_hero_sub")}</p>
           </motion.div>
         </div>
       </div>
@@ -174,13 +178,13 @@ export default function ContactPage() {
       <div className="bg-white border-b border-[#E8E0D0]">
         <div className="max-w-4xl mx-auto px-4 py-4 flex flex-wrap items-center justify-center gap-6">
           {[
-            { icon: <Shield className="w-4 h-4 text-green-600" />, text: "Paiement sécurisé" },
-            { icon: <Clock className="w-4 h-4 text-[#C9943A]" />, text: "Réponse sous 2h" },
-            { icon: <Star className="w-4 h-4 text-yellow-500 fill-current" />, text: "500+ voyageurs satisfaits" },
-            { icon: <CheckCircle className="w-4 h-4 text-blue-600" />, text: "Prix tout inclus garanti" },
-          ].map((t) => (
-            <div key={t.text} className="flex items-center gap-2 text-sm text-[#4A4A4A] font-medium">
-              {t.icon} {t.text}
+            { icon: <Shield className="w-4 h-4 text-green-600" />, text: t("contact_trust_1") },
+            { icon: <Clock className="w-4 h-4 text-[#C9943A]" />, text: t("contact_trust_2") },
+            { icon: <Star className="w-4 h-4 text-yellow-500 fill-current" />, text: t("contact_trust_3") },
+            { icon: <CheckCircle className="w-4 h-4 text-blue-600" />, text: t("contact_trust_4") },
+          ].map((item) => (
+            <div key={item.text} className="flex items-center gap-2 text-sm text-[#4A4A4A] font-medium">
+              {item.icon} {item.text}
             </div>
           ))}
         </div>
@@ -196,9 +200,9 @@ export default function ContactPage() {
             className="lg:col-span-3"
           >
             <div className="bg-white rounded-2xl border border-[#E8E0D0] shadow-[0_4px_30px_rgba(0,0,0,0.07)] p-8">
-              <h2 className="font-display text-2xl font-bold text-[#1A1A1A] mb-1">Votre demande</h2>
-              <p className="text-[#8A8A8A] text-sm mb-7">Remplissez le formulaire, nous vous répondons sous 2h.</p>
-              <Suspense fallback={<div className="text-[#8A8A8A] text-sm py-8 text-center">Chargement...</div>}>
+              <h2 className="font-display text-2xl font-bold text-[#1A1A1A] mb-1">{t("contact_form_title")}</h2>
+              <p className="text-[#8A8A8A] text-sm mb-7">{t("contact_form_sub")}</p>
+              <Suspense fallback={<div className="text-[#8A8A8A] text-sm py-8 text-center">{t("contact_loading")}</div>}>
                 <ContactForm />
               </Suspense>
             </div>
@@ -219,7 +223,7 @@ export default function ContactPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-[#1A1A1A]">WhatsApp</span>
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Réponse immédiate</span>
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">{t("contact_wa_instant")}</span>
                 </div>
                 <p className="text-[#C9943A] text-sm font-medium mt-0.5">{SITE.phone}</p>
               </div>
@@ -236,7 +240,7 @@ export default function ContactPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-[#1A1A1A]">WhatsApp</span>
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Direct</span>
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">{t("contact_wa_direct")}</span>
                 </div>
                 <p className="text-[#C9943A] text-sm font-medium mt-0.5">{SITE.phone2}</p>
               </div>
@@ -251,7 +255,7 @@ export default function ContactPage() {
                   <Phone className="w-4 h-4 text-[#C9943A]" />
                 </div>
                 <div>
-                  <div className="text-xs text-[#8A8A8A] font-medium">Téléphone 1</div>
+                  <div className="text-xs text-[#8A8A8A] font-medium">{t("contact_phone_1")}</div>
                   <div className="text-xs font-semibold text-[#1A1A1A] mt-0.5">{SITE.phone}</div>
                 </div>
               </a>
@@ -261,7 +265,7 @@ export default function ContactPage() {
                   <Phone className="w-4 h-4 text-[#C9943A]" />
                 </div>
                 <div>
-                  <div className="text-xs text-[#8A8A8A] font-medium">Téléphone 2</div>
+                  <div className="text-xs text-[#8A8A8A] font-medium">{t("contact_phone_2")}</div>
                   <div className="text-xs font-semibold text-[#1A1A1A] mt-0.5">{SITE.phone2}</div>
                 </div>
               </a>
@@ -276,7 +280,7 @@ export default function ContactPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-[#1A1A1A]">Email</span>
-                  <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">Sous 24h</span>
+                  <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">{t("contact_email_delay")}</span>
                 </div>
                 <p className="text-[#4A4A4A] text-sm mt-0.5">{SITE.email}</p>
               </div>
@@ -284,14 +288,14 @@ export default function ContactPage() {
 
             {/* Trust box */}
             <div className="bg-gradient-to-br from-[#FDF8F0] to-[#F5F0E8] rounded-2xl border border-[rgba(201,148,58,0.2)] p-5">
-              <h3 className="font-semibold text-[#A07020] text-sm uppercase tracking-wide mb-3">Nos engagements</h3>
+              <h3 className="font-semibold text-[#A07020] text-sm uppercase tracking-wide mb-3">{t("contact_commit_title")}</h3>
               <ul className="space-y-2.5">
                 {[
-                  "Devis 100% gratuit, sans engagement",
-                  "Réponse garantie sous 2h (jours ouvrés)",
-                  "Prix tout inclus, aucune surprise",
-                  "Accompagnement 24h/24 pendant le voyage",
-                  "Visa et assurance inclus sur demande",
+                  t("contact_commit_1"),
+                  t("contact_commit_2"),
+                  t("contact_commit_3"),
+                  t("contact_commit_4"),
+                  t("contact_commit_5"),
                 ].map((g) => (
                   <li key={g} className="flex items-start gap-2.5 text-sm text-[#4A4A4A]">
                     <CheckCircle className="w-4 h-4 text-[#C9943A] shrink-0 mt-0.5" />

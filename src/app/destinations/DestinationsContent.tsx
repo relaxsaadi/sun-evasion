@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, MapPin, Sun, Plane } from "lucide-react";
 import { DESTINATIONS, PACKAGES } from "@/lib/constants";
+import { useLang } from "@/contexts/LangContext";
 
 const DEST_PHOTOS: Record<string, string> = {
   turquie: "/images/istanbul.webp",
@@ -12,6 +13,8 @@ const DEST_PHOTOS: Record<string, string> = {
 };
 
 export default function DestinationsContent() {
+  const { t } = useLang();
+
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       {/* Hero */}
@@ -19,14 +22,13 @@ export default function DestinationsContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <span className="section-tag mb-5">
-              <MapPin className="w-3.5 h-3.5" /> Nos Destinations
+              <MapPin className="w-3.5 h-3.5" /> {t("destinations_tag")}
             </span>
             <h1 className="font-display text-5xl sm:text-6xl font-bold text-[#1A1A1A] mt-4 mb-5">
-              Explorez le <span className="gradient-gold">monde</span>
+              {t("destinations_title_1")} <span className="gradient-gold">{t("destinations_title_gold")}</span>
             </h1>
             <p className="text-[#4A4A4A] text-xl max-w-2xl mx-auto">
-              Deux destinations d&apos;exception choisies pour vous offrir le meilleur de la
-              Méditerranée et de l&apos;Orient.
+              {t("destinations_subtitle")}
             </p>
           </motion.div>
         </div>
@@ -86,9 +88,9 @@ export default function DestinationsContent() {
 
                     <div className="grid grid-cols-3 gap-3 mb-8">
                       {[
-                        { label: "Climat", value: dest.climate.split(" /")[0], icon: Sun },
-                        { label: "Vol depuis", value: "Alger", icon: Plane },
-                        { label: "Langue", value: dest.language.split(" / ")[0], icon: MapPin },
+                        { label: t("destinations_climate"), value: dest.climate.split(" /")[0], icon: Sun },
+                        { label: t("destinations_flight"), value: t("destinations_flight_val"), icon: Plane },
+                        { label: t("destinations_language"), value: dest.language.split(" / ")[0], icon: MapPin },
                       ].map((m) => (
                         <div
                           key={m.label}
@@ -102,7 +104,7 @@ export default function DestinationsContent() {
                     </div>
 
                     <Link href={`/destinations/${dest.slug}`} className="btn-primary">
-                      Voir {destPackages.length} séjours <ArrowRight className="w-4 h-4" />
+                      {destPackages.length} {t("destinations_see_stays")} <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>
                 </div>
@@ -125,16 +127,16 @@ export default function DestinationsContent() {
               <div className="relative h-full flex items-center px-10 sm:px-14">
                 <div>
                   <span className="text-[#C9943A] text-sm font-semibold uppercase tracking-widest mb-3 block">
-                    Service Omra
+                    {t("destinations_omra_tag")}
                   </span>
                   <h2 className="font-display text-3xl sm:text-4xl font-bold text-white mb-4">
-                    Séjours Omra & Pèlerinage
+                    {t("destinations_omra_title")}
                   </h2>
                   <p className="text-white/75 mb-6 max-w-md">
-                    Des forfaits Omra soigneusement organisés — vol, hébergement et guide religieux inclus.
+                    {t("destinations_omra_desc")}
                   </p>
                   <Link href="/contact?destination=omra" className="btn-primary">
-                    Voir nos forfaits Omra <ArrowRight className="w-4 h-4" />
+                    {t("destinations_omra_cta")} <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>

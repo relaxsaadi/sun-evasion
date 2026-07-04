@@ -9,6 +9,7 @@ import {
   ChevronRight, CheckCircle, MapPin, Calendar, ArrowRight, Sparkles
 } from "lucide-react";
 import { SITE, OMRA_PACKAGES } from "@/lib/constants";
+import { useLang } from "@/contexts/LangContext";
 
 
 const IMAGES = {
@@ -118,6 +119,7 @@ function FadeIn({ children, delay = 0, className = "" }: { children: React.React
 }
 
 export default function Home() {
+  const { t } = useLang();
   const [formData, setFormData] = useState({ name: "", phone: "", destination: "", date: "", message: "" });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -158,23 +160,22 @@ export default function Home() {
             className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/25 rounded-full px-4 py-2 text-white text-sm font-medium mb-6"
           >
             <Sparkles className="w-4 h-4 text-yellow-300" />
-            Agence de voyage algérienne · Turquie &amp; Tunisie
+            {t("hero_badge")}
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.35 }}
             className="font-display text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight mb-6"
           >
-            Votre Évasion<br />
-            <span className="text-[#E8B85A]">Commence Ici</span>
+            {t("hero_title_1")}<br />
+            <span className="text-[#E8B85A]">{t("hero_title_2")}</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.5 }}
             className="text-white/85 text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
           >
-            Des voyages inoubliables depuis l&apos;Algérie vers la Turquie et la Tunisie.
-            Vol + Hôtel + Transferts — tout inclus.
+            {t("hero_subtitle")}
           </motion.p>
 
           <motion.div
@@ -182,14 +183,14 @@ export default function Home() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link href="#devis" className="btn-primary text-base !px-8 !py-3.5">
-              Devis gratuit <ArrowRight className="w-4 h-4" />
+              {t("hero_cta_quote")} <ArrowRight className="w-4 h-4" />
             </Link>
             <a
               href={`https://wa.me/${SITE.whatsapp}?text=Bonjour Sun Evasion, je voudrais des infos sur vos voyages`}
               target="_blank" rel="noopener noreferrer"
               className="btn-outline text-base !px-8 !py-3.5"
             >
-              <MessageCircle className="w-4 h-4" /> WhatsApp
+              <MessageCircle className="w-4 h-4" /> {t("hero_cta_whatsapp")}
             </a>
           </motion.div>
 
@@ -198,9 +199,9 @@ export default function Home() {
             className="flex flex-wrap items-center justify-center gap-3 mt-12"
           >
             {[
-              { icon: <Shield className="w-3.5 h-3.5 text-green-400" />, text: "Paiement sécurisé" },
-              { icon: <Star className="w-3.5 h-3.5 text-yellow-400" />, text: "500+ avis 5 étoiles" },
-              { icon: <CheckCircle className="w-3.5 h-3.5 text-blue-400" />, text: "Prix tout inclus" },
+              { icon: <Shield className="w-3.5 h-3.5 text-green-400" />, text: t("hero_trust_1") },
+              { icon: <Star className="w-3.5 h-3.5 text-yellow-400" />, text: t("hero_trust_2") },
+              { icon: <CheckCircle className="w-3.5 h-3.5 text-blue-400" />, text: t("hero_trust_3") },
             ].map((b) => (
               <div key={b.text} className="trust-badge">
                 {b.icon}
@@ -224,15 +225,15 @@ export default function Home() {
         </motion.div>
       </section>
 
-{/* ── STATS BAR ── */}
+      {/* ── STATS BAR ── */}
       <section className="bg-white border-y border-[#E8E0D0] py-8">
         <div className="max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { number: "500+", label: "Voyageurs satisfaits" },
-              { number: "5★", label: "Note moyenne" },
-              { number: "10+", label: "Années d'expérience" },
-              { number: "24h", label: "Support client" },
+              { number: "500+", label: t("stat_travelers") },
+              { number: "5★", label: t("stat_rating") },
+              { number: "10+", label: t("stat_experience") },
+              { number: "24h", label: t("stat_support") },
             ].map((s, i) => (
               <FadeIn key={s.label} delay={i * 0.1}>
                 <div className="stat-number">{s.number}</div>
@@ -248,11 +249,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <FadeIn className="text-center mb-14">
             <span className="section-tag">
-              <MapPin className="w-3.5 h-3.5" /> Nos destinations
+              <MapPin className="w-3.5 h-3.5" /> {t("dest_section_tag")}
             </span>
-            <h2 className="section-title mt-4 mb-1">Turquie, Tunisie &amp; Omra</h2>
+            <h2 className="section-title mt-4 mb-1">{t("dest_section_title")}</h2>
             <div className="w-14 h-[3px] bg-gradient-to-r from-[#C9943A] to-[#E8B85A] rounded-full mx-auto mt-3 mb-4" />
-            <p className="text-[#4A4A4A] max-w-xl mx-auto">Voyages de loisirs ou pèlerinage — tout inclus, depuis Alger.</p>
+            <p className="text-[#4A4A4A] max-w-xl mx-auto">{t("dest_section_sub")}</p>
           </FadeIn>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -261,16 +262,16 @@ export default function Home() {
                 <Image src={IMAGES.cappadoce} alt="Turquie" fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width:768px) 100vw, 33vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
                 <div className="absolute bottom-0 left-0 p-7">
-                  <div className="text-[#E8B85A] text-sm font-semibold uppercase tracking-wider mb-2">À partir de 89 000 DA</div>
-                  <h3 className="font-display text-2xl font-bold text-white mb-2">Turquie</h3>
-                  <p className="text-white/75 text-sm mb-4 max-w-xs">Istanbul, Cappadoce, Antalya — 3 univers uniques vous attendent.</p>
+                  <div className="text-[#E8B85A] text-sm font-semibold uppercase tracking-wider mb-2">{t("dest_turkey_from")}</div>
+                  <h3 className="font-display text-2xl font-bold text-white mb-2">{t("dest_turkey_title")}</h3>
+                  <p className="text-white/75 text-sm mb-4 max-w-xs">{t("dest_turkey_desc")}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {["Istanbul", "Cappadoce", "Antalya"].map((d) => (
                       <span key={d} className="bg-white/15 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full border border-white/20">{d}</span>
                     ))}
                   </div>
                   <Link href="/destinations" className="inline-flex items-center gap-2 bg-[#C9943A] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#A07020] transition-colors">
-                    Découvrir <ChevronRight className="w-4 h-4" />
+                    {t("dest_discover")} <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>
@@ -281,16 +282,16 @@ export default function Home() {
                 <Image src={IMAGES.djerba} alt="Tunisie" fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width:768px) 100vw, 33vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
                 <div className="absolute bottom-0 left-0 p-7">
-                  <div className="text-[#E8B85A] text-sm font-semibold uppercase tracking-wider mb-2">À partir de 65 000 DA</div>
-                  <h3 className="font-display text-2xl font-bold text-white mb-2">Tunisie</h3>
-                  <p className="text-white/75 text-sm mb-4 max-w-xs">Djerba, Sousse, Carthage — mer turquoise et soleil sans fin.</p>
+                  <div className="text-[#E8B85A] text-sm font-semibold uppercase tracking-wider mb-2">{t("dest_tunisia_from")}</div>
+                  <h3 className="font-display text-2xl font-bold text-white mb-2">{t("dest_tunisia_title")}</h3>
+                  <p className="text-white/75 text-sm mb-4 max-w-xs">{t("dest_tunisia_desc")}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {["Djerba", "Sousse", "Carthage"].map((d) => (
                       <span key={d} className="bg-white/15 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full border border-white/20">{d}</span>
                     ))}
                   </div>
                   <Link href="/destinations" className="inline-flex items-center gap-2 bg-[#C9943A] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#A07020] transition-colors">
-                    Découvrir <ChevronRight className="w-4 h-4" />
+                    {t("dest_discover")} <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>
@@ -301,19 +302,19 @@ export default function Home() {
                 <Image src={IMAGES.omra} alt="Omra — La Mecque" fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width:768px) 100vw, 33vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">🕌 Service Omra</span>
+                  <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">🕌 {t("omra_service_tag")}</span>
                 </div>
                 <div className="absolute bottom-0 left-0 p-7">
-                  <div className="text-emerald-300 text-sm font-semibold uppercase tracking-wider mb-2">À partir de 250 000 DA</div>
-                  <h3 className="font-display text-2xl font-bold text-white mb-2">Omra</h3>
-                  <p className="text-white/75 text-sm mb-4 max-w-xs">La Mecque &amp; Médine — visa inclus, guide religieux, hôtels proches du Haram.</p>
+                  <div className="text-emerald-300 text-sm font-semibold uppercase tracking-wider mb-2">{t("dest_omra_from")}</div>
+                  <h3 className="font-display text-2xl font-bold text-white mb-2">{t("dest_omra_title")}</h3>
+                  <p className="text-white/75 text-sm mb-4 max-w-xs">{t("dest_omra_desc")}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {["La Mecque", "Médine", "Ziyarat"].map((d) => (
                       <span key={d} className="bg-white/15 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full border border-white/20">{d}</span>
                     ))}
                   </div>
                   <Link href="#omra" className="inline-flex items-center gap-2 bg-emerald-600 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-emerald-700 transition-colors">
-                    Voir les forfaits <ChevronRight className="w-4 h-4" />
+                    {t("dest_omra_packages")} <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>
@@ -326,15 +327,15 @@ export default function Home() {
       <section className="py-20 px-4 bg-[#F5F0E8]">
         <div className="max-w-6xl mx-auto">
           <FadeIn className="text-center mb-14">
-            <span className="section-tag">Pourquoi nous choisir</span>
-            <h2 className="section-title mt-4">L&apos;excellence à chaque étape</h2>
+            <span className="section-tag">{t("why_tag")}</span>
+            <h2 className="section-title mt-4">{t("why_title")}</h2>
           </FadeIn>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: Shield, title: "Agence agréée", text: "Agence officielle reconnue en Algérie. Vos réservations sont 100% sécurisées.", color: "text-green-600", bg: "bg-green-50" },
-              { icon: Star, title: "Qualité 5 étoiles", text: "Hôtels sélectionnés, guides professionnels, expérience premium garantie.", color: "text-yellow-500", bg: "bg-yellow-50" },
-              { icon: Clock, title: "Disponible 24h/24", text: "Notre équipe vous accompagne avant, pendant et après votre voyage.", color: "text-blue-600", bg: "bg-blue-50" },
-              { icon: Users, title: "Prix tout inclus", text: "Vol, hôtel, transferts, excursions — aucune surprise sur place.", color: "text-purple-600", bg: "bg-purple-50" },
+              { icon: Shield, title: t("why_1_title"), text: t("why_1_text"), color: "text-green-600", bg: "bg-green-50" },
+              { icon: Star, title: t("why_2_title"), text: t("why_2_text"), color: "text-yellow-500", bg: "bg-yellow-50" },
+              { icon: Clock, title: t("why_3_title"), text: t("why_3_text"), color: "text-blue-600", bg: "bg-blue-50" },
+              { icon: Users, title: t("why_4_title"), text: t("why_4_text"), color: "text-purple-600", bg: "bg-purple-50" },
             ].map((f, i) => (
               <FadeIn key={f.title} delay={i * 0.1}>
                 <div className="card p-6 group h-full">
@@ -355,11 +356,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <FadeIn className="text-center mb-14">
             <span className="section-tag">
-              <Plane className="w-3.5 h-3.5" /> Nos forfaits
+              <Plane className="w-3.5 h-3.5" /> {t("pkg_tag")}
             </span>
-            <h2 className="section-title mt-4 mb-1">Voyages tout inclus</h2>
+            <h2 className="section-title mt-4 mb-1">{t("pkg_title")}</h2>
             <div className="w-14 h-[3px] bg-gradient-to-r from-[#C9943A] to-[#E8B85A] rounded-full mx-auto mt-3 mb-4" />
-            <p className="text-[#4A4A4A] max-w-xl mx-auto">Vol + Hôtel + Transferts + Excursions. Réservez en ligne ou contactez-nous.</p>
+            <p className="text-[#4A4A4A] max-w-xl mx-auto">{t("pkg_sub")}</p>
           </FadeIn>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -386,7 +387,7 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="text-right shrink-0 ml-3">
-                        <div className="text-[#8A8A8A] text-xs">à partir de</div>
+                        <div className="text-[#8A8A8A] text-xs">{t("pkg_from")}</div>
                         <div className="font-display font-bold text-[#C9943A] text-xl">{pkg.price} DA</div>
                       </div>
                     </div>
@@ -404,10 +405,10 @@ export default function Home() {
                         target="_blank" rel="noopener noreferrer"
                         className="flex-1 flex items-center justify-center gap-1.5 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
                       >
-                        <MessageCircle className="w-4 h-4" /> WhatsApp
+                        <MessageCircle className="w-4 h-4" /> {t("pkg_whatsapp")}
                       </a>
                       <Link href="/contact" className="btn-primary flex-1 !py-2.5 !px-4 justify-center text-sm">
-                        Réserver
+                        {t("pkg_book")}
                       </Link>
                     </div>
                   </div>
@@ -426,19 +427,23 @@ export default function Home() {
             <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
               <div>
                 <span className="section-tag !bg-emerald-50 !text-emerald-800 !border-emerald-200">
-                  🕌 Service Omra
+                  🕌 {t("omra_service_tag")}
                 </span>
                 <h2 className="section-title mt-4 mb-4">
-                  Voyages <span className="gradient-gold">Omra</span>
+                  {t("omra_title").split(" ")[0]} <span className="gradient-gold">{t("omra_title").split(" ").slice(1).join(" ")}</span>
                 </h2>
                 <div className="w-14 h-[3px] bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full mb-5" />
                 <p className="text-[#4A4A4A] text-lg leading-relaxed mb-6">
-                  Sun Evasion vous accompagne pour votre pèlerinage avec des forfaits tout inclus —
-                  La Mecque &amp; Médine — conçus pour vous permettre de vous concentrer
-                  pleinement sur votre spiritualité.
+                  {t("omra_desc")}
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  {["Visa Omra inclus", "Guide religieux", "Hôtels proches Haram", "Ziyarat inclus", "Pension complète"].map((f) => (
+                  {[
+                    t("omra_feature_1"),
+                    t("omra_feature_2"),
+                    t("omra_feature_3"),
+                    t("omra_feature_4"),
+                    t("omra_feature_5"),
+                  ].map((f) => (
                     <span key={f} className="flex items-center gap-1.5 bg-white border border-emerald-200 text-emerald-800 text-sm px-3 py-1.5 rounded-full">
                       <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" /> {f}
                     </span>
@@ -452,8 +457,8 @@ export default function Home() {
                   <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 flex items-center gap-4">
                     <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-2xl shrink-0">🕌</div>
                     <div>
-                      <div className="font-bold text-[#1A1A1A]">La Mecque &amp; Médine</div>
-                      <div className="text-[#8A8A8A] text-sm">Départs depuis Alger · Visa inclus</div>
+                      <div className="font-bold text-[#1A1A1A]">{t("omra_mecque_title")}</div>
+                      <div className="text-[#8A8A8A] text-sm">{t("omra_mecque_sub")}</div>
                     </div>
                   </div>
                 </div>
@@ -474,7 +479,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="p-5 flex flex-col flex-1">
-                    <div className="text-[#8A8A8A] text-xs mb-1">à partir de</div>
+                    <div className="text-[#8A8A8A] text-xs mb-1">{t("pkg_from")}</div>
                     <div className="font-display font-bold text-[#C9943A] text-2xl mb-1">{pkg.price} DA</div>
                     <div className="text-[#4A4A4A] text-xs mb-4 pb-4 border-b border-[#E8E0D0]">
                       🏨 {pkg.hotels}
@@ -492,7 +497,7 @@ export default function Home() {
                       target="_blank" rel="noopener noreferrer"
                       className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
                     >
-                      <MessageCircle className="w-4 h-4" /> Demander ce forfait
+                      <MessageCircle className="w-4 h-4" /> {t("omra_ask")}
                     </a>
                   </div>
                 </div>
@@ -504,15 +509,15 @@ export default function Home() {
           <FadeIn delay={0.2}>
             <div className="mt-10 bg-gradient-to-r from-emerald-800 to-emerald-600 rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
               <div>
-                <h3 className="font-display text-2xl font-bold text-white mb-2">Omra sur mesure ?</h3>
-                <p className="text-emerald-100">Dates personnalisées, groupe familial, budget spécifique — contactez-nous pour un forfait adapté.</p>
+                <h3 className="font-display text-2xl font-bold text-white mb-2">{t("omra_custom_title")}</h3>
+                <p className="text-emerald-100">{t("omra_custom_desc")}</p>
               </div>
               <div className="flex gap-3 shrink-0">
                 <a
                   href={`tel:${SITE.phone}`}
                   className="flex items-center gap-2 bg-white text-emerald-800 font-semibold px-5 py-3 rounded-xl hover:bg-emerald-50 transition-colors text-sm"
                 >
-                  <Phone className="w-4 h-4" /> Appeler
+                  <Phone className="w-4 h-4" /> {t("omra_call")}
                 </a>
                 <a
                   href={`https://wa.me/${SITE.whatsapp}?text=Bonjour, je voudrais un forfait Omra personnalisé`}
@@ -533,20 +538,20 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <FadeIn>
               <span className="section-tag !bg-white/10 !text-[#E8B85A] !border-white/20">
-                <Sparkles className="w-3.5 h-3.5" /> Gratuit &amp; sans engagement
+                <Sparkles className="w-3.5 h-3.5" /> {t("quote_tag")}
               </span>
               <h2 className="font-display text-4xl md:text-5xl font-bold text-white mt-5 mb-5 leading-tight">
-                Obtenez votre<br />
-                <span className="text-[#E8B85A]">devis personnalisé</span>
+                {t("quote_title_1")}<br />
+                <span className="text-[#E8B85A]">{t("quote_title_2")}</span>
               </h2>
               <p className="text-white/70 text-lg mb-8 leading-relaxed">
-                Partagez-nous votre projet de voyage. Notre expert vous rappelle sous 2h avec une offre sur mesure.
+                {t("quote_desc")}
               </p>
               <div className="space-y-4">
                 {[
-                  { icon: CheckCircle, text: "Réponse garantie en moins de 2 heures" },
-                  { icon: Shield, text: "Aucun engagement, devis 100% gratuit" },
-                  { icon: Phone, text: "Conseiller dédié pour votre voyage" },
+                  { icon: CheckCircle, text: t("quote_point_1") },
+                  { icon: Shield, text: t("quote_point_2") },
+                  { icon: Phone, text: t("quote_point_3") },
                 ].map((p) => (
                   <div key={p.text} className="flex items-center gap-3 text-white/80">
                     <p.icon className="w-5 h-5 text-[#C9943A] shrink-0" />
@@ -555,7 +560,7 @@ export default function Home() {
                 ))}
               </div>
               <div className="mt-8 p-4 bg-white/8 rounded-xl border border-white/10">
-                <p className="text-[#8A8A8A] text-sm mb-2">Ou contactez-nous directement</p>
+                <p className="text-[#8A8A8A] text-sm mb-2">{t("quote_contact_direct")}</p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <a href={`tel:${SITE.phone}`} className="flex items-center gap-2 text-white font-semibold hover:text-[#E8B85A] transition-colors">
                     <Phone className="w-4 h-4 text-[#C9943A]" /> {SITE.phone}
@@ -574,33 +579,33 @@ export default function Home() {
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <CheckCircle className="w-8 h-8 text-green-600" />
                     </div>
-                    <h3 className="font-display text-2xl font-bold text-[#1A1A1A] mb-2">Demande envoyée !</h3>
-                    <p className="text-[#4A4A4A]">Notre équipe vous contacte dans les 2 heures.</p>
+                    <h3 className="font-display text-2xl font-bold text-[#1A1A1A] mb-2">{t("quote_success_title")}</h3>
+                    <p className="text-[#4A4A4A]">{t("quote_success_desc")}</p>
                     <a
                       href={`https://wa.me/${SITE.whatsapp}?text=Bonjour, j'ai envoyé une demande de devis sur votre site`}
                       target="_blank" rel="noopener noreferrer"
                       className="btn-primary mt-6 inline-flex"
                     >
-                      <MessageCircle className="w-4 h-4" /> Confirmer sur WhatsApp
+                      <MessageCircle className="w-4 h-4" /> {t("quote_success_wa")}
                     </a>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
-                    <h3 className="font-display text-2xl font-bold text-[#1A1A1A] mb-6">Votre devis gratuit</h3>
+                    <h3 className="font-display text-2xl font-bold text-[#1A1A1A] mb-6">{t("quote_form_title")}</h3>
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Nom complet *</label>
+                        <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("quote_name")}</label>
                         <input type="text" required placeholder="Mohamed Benali" className="form-input" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Téléphone *</label>
+                        <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("quote_phone")}</label>
                         <input type="tel" required placeholder="+213 7XX XXX XXX" className="form-input" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Destination souhaitée *</label>
+                      <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("quote_destination")}</label>
                       <select required className="form-input" value={formData.destination} onChange={(e) => setFormData({ ...formData, destination: e.target.value })}>
-                        <option value="">Choisir une destination...</option>
+                        <option value="">{t("quote_destination_placeholder")}</option>
                         <option value="Istanbul, Turquie">Istanbul, Turquie</option>
                         <option value="Cappadoce, Turquie">Cappadoce, Turquie</option>
                         <option value="Antalya, Turquie">Antalya, Turquie</option>
@@ -609,17 +614,17 @@ export default function Home() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Date de départ souhaitée</label>
+                      <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("quote_date")}</label>
                       <input type="date" className="form-input" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">Message (optionnel)</label>
-                      <textarea rows={3} placeholder="Nombre de personnes, budget, demandes spéciales..." className="form-input resize-none" value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} />
+                      <label className="block text-sm font-semibold text-[#4A4A4A] mb-1.5">{t("quote_message")}</label>
+                      <textarea rows={3} placeholder={t("quote_message_placeholder")} className="form-input resize-none" value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} />
                     </div>
                     <button type="submit" disabled={sending} className="btn-primary w-full justify-center text-base !py-3.5 disabled:opacity-60 disabled:cursor-not-allowed">
-                      {sending ? "Envoi en cours..." : <><span>Obtenir mon devis gratuit</span> <ArrowRight className="w-4 h-4" /></>}
+                      {sending ? t("quote_sending") : <><span>{t("quote_submit")}</span> <ArrowRight className="w-4 h-4" /></>}
                     </button>
-                    <p className="text-center text-[#8A8A8A] text-xs">Réponse garantie sous 2h · Sans engagement</p>
+                    <p className="text-center text-[#8A8A8A] text-xs">{t("quote_footer")}</p>
                   </form>
                 )}
               </div>
@@ -628,29 +633,29 @@ export default function Home() {
         </div>
       </section>
 
-{/* ── TESTIMONIALS ── */}
+      {/* ── TESTIMONIALS ── */}
       <section className="py-20 px-4 bg-[#F5F0E8]">
         <div className="max-w-6xl mx-auto">
           <FadeIn className="text-center mb-14">
-            <span className="section-tag"><Star className="w-3.5 h-3.5" /> Témoignages</span>
-            <h2 className="section-title mt-4">Ils ont voyagé avec nous</h2>
+            <span className="section-tag"><Star className="w-3.5 h-3.5" /> {t("testimonials_tag")}</span>
+            <h2 className="section-title mt-4">{t("testimonials_title")}</h2>
           </FadeIn>
           <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t, i) => (
-              <FadeIn key={t.name} delay={i * 0.1}>
+            {TESTIMONIALS.map((testimonial, i) => (
+              <FadeIn key={testimonial.name} delay={i * 0.1}>
                 <div className="card p-7 h-full flex flex-col">
                   <div className="flex gap-0.5 mb-4 stars">
-                    {Array.from({ length: t.rating }).map((_, j) => <Star key={j} className="w-4 h-4 fill-current" />)}
+                    {Array.from({ length: testimonial.rating }).map((_, j) => <Star key={j} className="w-4 h-4 fill-current" />)}
                   </div>
-                  <p className="text-[#4A4A4A] italic leading-relaxed mb-6 flex-1">&ldquo;{t.text}&rdquo;</p>
+                  <p className="text-[#4A4A4A] italic leading-relaxed mb-6 flex-1">&ldquo;{testimonial.text}&rdquo;</p>
                   <div className="flex items-center gap-3 pt-4 border-t border-[#E8E0D0]">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#C9943A] to-[#E8B85A] flex items-center justify-center text-white font-bold font-display shrink-0">
-                      {t.name.charAt(0)}
+                      {testimonial.name.charAt(0)}
                     </div>
                     <div>
-                      <div className="font-semibold text-[#1A1A1A] text-sm">{t.name}</div>
+                      <div className="font-semibold text-[#1A1A1A] text-sm">{testimonial.name}</div>
                       <div className="text-[#8A8A8A] text-xs flex items-center gap-1">
-                        <MapPin className="w-3 h-3" /> {t.city} · {t.dest}
+                        <MapPin className="w-3 h-3" /> {testimonial.city} · {testimonial.dest}
                       </div>
                     </div>
                   </div>
@@ -667,16 +672,16 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/55" />
         <div className="relative h-full flex items-center justify-center text-center px-4">
           <FadeIn>
-            <p className="text-white/80 text-lg mb-3">Prêt pour votre prochaine aventure ?</p>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-8">Réservez dès maintenant</h2>
+            <p className="text-white/80 text-lg mb-3">{t("cta_ready")}</p>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-8">{t("cta_book_now")}</h2>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="#devis" className="btn-primary !text-base !px-8">Devis gratuit</Link>
+              <Link href="#devis" className="btn-primary !text-base !px-8">{t("cta_free_quote")}</Link>
               <a
                 href={`https://wa.me/${SITE.whatsapp}?text=Bonjour, je veux réserver un voyage`}
                 target="_blank" rel="noopener noreferrer"
                 className="btn-outline !text-base !px-8"
               >
-                <MessageCircle className="w-4 h-4" /> Contacter sur WhatsApp
+                <MessageCircle className="w-4 h-4" /> {t("cta_contact_wa")}
               </a>
             </div>
           </FadeIn>

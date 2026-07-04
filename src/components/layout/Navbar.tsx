@@ -4,30 +4,34 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Phone, MessageCircle } from "lucide-react";
+import { Menu, X, Phone, MessageCircle, Globe } from "lucide-react";
 import { SITE } from "@/lib/constants";
 import { usePathname } from "next/navigation";
-
-const NAV_LINKS = [
-  { label: "Accueil", href: "/" },
-  { label: "Destinations", href: "/destinations" },
-  { label: "Voyages", href: "/voyages" },
-  { label: "À propos", href: "/a-propos" },
-  { label: "Contact", href: "/contact" },
-];
+import { useLang } from "@/contexts/LangContext";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { t, lang, setLang } = useLang();
 
-  if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
-
+  // All hooks before any conditional returns
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
+
+  const NAV_LINKS = [
+    { label: t("nav_home"), href: "/" },
+    { label: t("nav_destinations"), href: "/destinations" },
+    { label: t("nav_voyages"), href: "/voyages" },
+    { label: t("nav_omra"), href: "/omra" },
+    { label: t("nav_about"), href: "/a-propos" },
+    { label: t("nav_contact"), href: "/contact" },
+  ];
 
   return (
     <>
@@ -72,7 +76,7 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* CTA */}
+            {/* CTA + lang switcher */}
             <div className="hidden md:flex items-center gap-3">
               <div className={`flex flex-col items-end text-xs font-medium transition-colors duration-200 ${scrolled ? "text-[#4A4A4A]" : "text-white/80"}`}>
                 <a href={`tel:${SITE.phone}`} className="flex items-center gap-1 hover:text-[#C9943A] transition-colors">
@@ -82,8 +86,21 @@ export default function Navbar() {
                   <Phone className="w-3 h-3" /> {SITE.phone2}
                 </a>
               </div>
+              {/* Language switcher */}
+              <button
+                onClick={() => setLang(lang === "ar" ? "fr" : "ar")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 ${
+                  scrolled
+                    ? "border-[#E8E0D0] text-[#4A4A4A] hover:border-[#C9943A] hover:text-[#C9943A]"
+                    : "border-white/30 text-white/80 hover:border-white hover:text-white"
+                }`}
+                aria-label="Switch language"
+              >
+                <Globe className="w-3 h-3" />
+                {t("nav_lang_switch")}
+              </button>
               <Link href="/contact" className="btn-primary text-sm !py-2 !px-5">
-                Réserver
+                {t("nav_book")}
               </Link>
             </div>
 
@@ -113,11 +130,11 @@ export default function Navbar() {
               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
             />
             <motion.div
-              initial={{ x: "100%" }}
+              initial={{ x: lang === "ar" ? "-100%" : "100%" }}
               animate={{ x: 0 }}
-              exit={{ x: "100%" }}
+              exit={{ x: lang === "ar" ? "-100%" : "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 220 }}
-              className="fixed right-0 top-0 bottom-0 w-72 bg-white shadow-2xl z-50 p-6"
+              className={`fixed ${lang === "ar" ? "left-0" : "right-0"} top-0 bottom-0 w-72 bg-white shadow-2xl z-50 p-6`}
             >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center">
@@ -135,7 +152,7 @@ export default function Navbar() {
                 {NAV_LINKS.map((link, i) => (
                   <motion.div
                     key={link.href}
-                    initial={{ opacity: 0, x: 20 }}
+                    initial={{ opacity: 0, x: lang === "ar" ? -20 : 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.06 }}
                   >
@@ -156,8 +173,16 @@ export default function Navbar() {
                   onClick={() => setOpen(false)}
                   className="btn-primary w-full justify-center"
                 >
-                  Réserver maintenant
+                  {t("nav_book")}
                 </Link>
+                {/* Mobile language switcher */}
+                <button
+                  onClick={() => setLang(lang === "ar" ? "fr" : "ar")}
+                  className="flex items-center gap-2 w-full px-4 py-2 text-sm text-[#4A4A4A] hover:text-[#C9943A] border border-[#E8E0D0] hover:border-[#C9943A] rounded-xl transition-all duration-200 font-medium"
+                >
+                  <Globe className="w-4 h-4" />
+                  {t("nav_lang_switch")}
+                </button>
                 <a href={`tel:${SITE.phone}`} className="flex items-center gap-2 text-sm text-[#8A8A8A] hover:text-[#C9943A] transition-colors">
                   <Phone className="w-4 h-4" /> {SITE.phone}
                 </a>

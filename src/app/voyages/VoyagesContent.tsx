@@ -6,12 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Check, Clock, Plane, Star, Filter } from "lucide-react";
 import { PACKAGES, DESTINATIONS } from "@/lib/constants";
-
-const FILTERS = [
-  { label: "Tous", value: "all" },
-  { label: "🇹🇷 Turquie", value: "turquie" },
-  { label: "🇹🇳 Tunisie", value: "tunisie" },
-];
+import { useLang } from "@/contexts/LangContext";
 
 const PKG_PHOTOS: Record<string, string> = {
   "istanbul-5j": "/images/istanbul.webp",
@@ -22,8 +17,15 @@ const PKG_PHOTOS: Record<string, string> = {
 };
 
 export default function VoyagesContent() {
+  const { t } = useLang();
   const [filter, setFilter] = useState("all");
   const filtered = filter === "all" ? PACKAGES : PACKAGES.filter((p) => p.destination === filter);
+
+  const FILTERS = [
+    { label: t("voyages_filter_all"), value: "all" },
+    { label: "🇹🇷 Turquie", value: "turquie" },
+    { label: "🇹🇳 Tunisie", value: "tunisie" },
+  ];
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
@@ -34,13 +36,13 @@ export default function VoyagesContent() {
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pt-20">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <span className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full border border-white/25 mb-4">
-              <Plane className="w-3.5 h-3.5" /> Nos Voyages
+              <Plane className="w-3.5 h-3.5" /> {t("voyages_tag")}
             </span>
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-white mb-3">
-              Tous nos séjours
+              {t("voyages_title")}
             </h1>
             <p className="text-white/80 text-lg">
-              {PACKAGES.length} voyages · Départs depuis Alger
+              {PACKAGES.length} {t("voyages_subtitle_from")}
             </p>
           </motion.div>
         </div>
@@ -68,7 +70,7 @@ export default function VoyagesContent() {
               {f.label}
             </button>
           ))}
-          <span className="ml-auto text-[#8A8A8A] text-sm">{filtered.length} résultats</span>
+          <span className="ml-auto text-[#8A8A8A] text-sm">{filtered.length} {t("voyages_results")}</span>
         </motion.div>
 
         {/* Grid */}
@@ -90,7 +92,7 @@ export default function VoyagesContent() {
                   {pkg.popular && (
                     <div className="absolute -top-3 left-5 z-10">
                       <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#A07020] to-[#C9943A] text-white text-xs font-bold shadow-md">
-                        ⭐ Populaire
+                        ⭐ {t("voyages_popular")}
                       </span>
                     </div>
                   )}
@@ -129,7 +131,7 @@ export default function VoyagesContent() {
                           <Clock className="w-3 h-3" /> {pkg.duration}
                         </span>
                         <span className="flex items-center gap-1">
-                          <Plane className="w-3 h-3" /> Départ Alger
+                          <Plane className="w-3 h-3" /> {t("voyages_depart_alger")}
                         </span>
                       </div>
 
@@ -138,7 +140,7 @@ export default function VoyagesContent() {
                         <span className="text-2xl font-bold gradient-gold">
                           {pkg.price.toLocaleString("fr-DZ")}
                         </span>
-                        <span className="text-[#8A8A8A] text-xs">DZD / pers.</span>
+                        <span className="text-[#8A8A8A] text-xs">{t("voyages_from")}</span>
                       </div>
 
                       {/* Highlights */}
@@ -162,13 +164,13 @@ export default function VoyagesContent() {
                         ))}
                         {pkg.includes.length > 3 && (
                           <li className="text-xs text-[#8A8A8A] ml-5">
-                            +{pkg.includes.length - 3} autres inclus
+                            +{pkg.includes.length - 3} {t("voyages_more_includes")}
                           </li>
                         )}
                       </ul>
 
                       <Link href={`/contact?package=${pkg.id}`} className="btn-primary w-full justify-center text-sm">
-                        Réserver ce séjour
+                        {t("voyages_book")}
                       </Link>
                     </div>
                   </div>

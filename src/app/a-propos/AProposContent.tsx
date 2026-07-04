@@ -5,22 +5,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { Sun, Heart, Award, Users, MapPin, Phone, MessageCircle } from "lucide-react";
 import { SITE } from "@/lib/constants";
-
-const VALUES = [
-  { icon: Heart, title: "Passion du voyage", desc: "Nous vivons pour voyager et partageons cette passion avec vous à chaque séjour." },
-  { icon: Award, title: "Excellence", desc: "Des séjours soigneusement sélectionnés pour une qualité garantie à chaque étape." },
-  { icon: Users, title: "Confiance", desc: "Plus de 500 voyageurs algériens nous font confiance chaque année." },
-  { icon: MapPin, title: "Expertise locale", desc: "Basés à Alger, nous connaissons parfaitement les besoins des voyageurs algériens." },
-];
-
-const STATS = [
-  { value: "500+", label: "Voyageurs satisfaits" },
-  { value: "2", label: "Destinations phares" },
-  { value: "4.9★", label: "Note moyenne" },
-  { value: "24/7", label: "Support WhatsApp" },
-];
+import { useLang } from "@/contexts/LangContext";
 
 export default function AboutPage() {
+  const { t } = useLang();
+
+  const VALUES = [
+    { icon: Heart, title: t("about_val_1_title"), desc: t("about_val_1_desc") },
+    { icon: Award, title: t("about_val_2_title"), desc: t("about_val_2_desc") },
+    { icon: Users, title: t("about_val_3_title"), desc: t("about_val_3_desc") },
+    { icon: MapPin, title: t("about_val_4_title"), desc: t("about_val_4_desc") },
+  ];
+
+  const STATS = [
+    { value: "500+", label: t("about_stat_1") },
+    { value: "2", label: t("about_stat_2") },
+    { value: "4.9★", label: t("about_stat_3") },
+    { value: "24/7", label: t("about_stat_4") },
+  ];
+
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       {/* Photo Hero */}
@@ -33,10 +36,10 @@ export default function AboutPage() {
               <Sun className="w-8 h-8 text-white" />
             </div>
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-white mb-3">
-              Notre histoire
+              {t("about_hero_title")}
             </h1>
             <p className="text-white/80 text-lg max-w-xl mx-auto">
-              Une agence née de la passion du voyage, pour les Algériens
+              {t("about_hero_sub")}
             </p>
           </motion.div>
         </div>
@@ -51,25 +54,15 @@ export default function AboutPage() {
           className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20"
         >
           <div>
-            <span className="section-tag mb-5">Qui sommes-nous</span>
+            <span className="section-tag mb-5">{t("about_who_tag")}</span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#1A1A1A] mt-4 mb-6">
-              Sun Evasion, votre agence<br />
-              <span className="gradient-gold">de voyage de confiance</span>
+              {t("about_who_title")}<br />
+              <span className="gradient-gold">{t("about_who_title_gold")}</span>
             </h2>
             <div className="space-y-4 text-[#4A4A4A] text-lg leading-relaxed">
-              <p>
-                Sun Evasion est une agence de voyage algérienne spécialisée dans les séjours en
-                Turquie et en Tunisie. Nous proposons des voyages clé en main, pensés pour les
-                familles algériennes, les couples et les voyageurs individuels.
-              </p>
-              <p>
-                Notre équipe prend en charge tout — du vol à l&apos;hébergement, en passant par les
-                transferts et les visites guidées avec des guides francophones.
-              </p>
-              <p>
-                Basés à Alger, nous comprenons les besoins de nos voyageurs. Notre objectif : que
-                chaque client rentre avec des souvenirs plein les yeux et l&apos;envie de repartir.
-              </p>
+              <p>{t("about_story_1")}</p>
+              <p>{t("about_story_2")}</p>
+              <p>{t("about_story_3")}</p>
             </div>
           </div>
 
@@ -99,9 +92,9 @@ export default function AboutPage() {
           className="mb-20"
         >
           <div className="text-center mb-12">
-            <span className="section-tag mb-4">Ce qui nous définit</span>
+            <span className="section-tag mb-4">{t("about_values_tag")}</span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#1A1A1A] mt-4">
-              Nos <span className="gradient-gold">valeurs</span>
+              {t("about_values_title")} <span className="gradient-gold">{t("about_values_gold")}</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -149,15 +142,16 @@ export default function AboutPage() {
           className="bg-[#1C1C1C] rounded-3xl p-10 sm:p-14 text-center"
         >
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-white mb-4">
-            Prêt à partir avec{" "}
-            <span className="gradient-gold">Sun Evasion</span> ?
+            {t("about_cta_title_1")}{" "}
+            <span className="gradient-gold">{t("about_cta_title_2")}</span>{" "}
+            {t("about_cta_title_3")}
           </h2>
           <p className="text-white/60 mb-8 max-w-xl mx-auto text-lg">
-            Contactez-nous pour organiser votre prochain voyage. Devis gratuit, réponse en 2 heures.
+            {t("about_cta_desc")}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/contact" className="btn-primary text-base px-8 py-4">
-              Demander un devis gratuit
+              {t("about_cta_btn")}
             </Link>
             <a
               href={`https://wa.me/${SITE.whatsapp}?text=Bonjour Sun Evasion, je voudrais des informations.`}

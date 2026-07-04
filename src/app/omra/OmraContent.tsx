@@ -9,6 +9,7 @@ import {
   Building2, Baby,
 } from "lucide-react";
 import { SITE } from "@/lib/constants";
+import { useLang } from "@/contexts/LangContext";
 
 // ─── Real data from official programme PDF ───────────────────────────────────
 const DEPARTURES = [
@@ -21,7 +22,7 @@ const DEPARTURES = [
     duree: "14 jours",
     hotel: "Al Manara Ajyad P750",
     hotelAr: "المنارة اجياد",
-    programme: "Petit déjeuner",
+    programme: "breakfast",
     ch5: 209000,
     ch4: 219000,
     ch3: 249000,
@@ -38,7 +39,7 @@ const DEPARTURES = [
     duree: "15 jours",
     hotel: "Masar Al Misk",
     hotelAr: "مسار المسك",
-    programme: "Logement seul",
+    programme: "room_only",
     ch5: 199000,
     ch4: 209000,
     ch3: 229000,
@@ -55,7 +56,7 @@ const DEPARTURES = [
     duree: "14 jours",
     hotel: "Al Manara Ajyad P750",
     hotelAr: "المنارة اجياد",
-    programme: "Petit déjeuner",
+    programme: "breakfast",
     ch5: 235000,
     ch4: 245000,
     ch3: 275000,
@@ -72,7 +73,7 @@ const DEPARTURES = [
     duree: "15 jours",
     hotel: "Masar Al Misk",
     hotelAr: "مسار المسك",
-    programme: "Logement seul",
+    programme: "room_only",
     ch5: 219000,
     ch4: 229000,
     ch3: 249000,
@@ -88,25 +89,27 @@ const CHILD_RATES = [
   { age: "0 à 2 ans",            reduction: "80 000 DA",   base: "tarif fixe" },
 ];
 
-const ROOM_TYPES = [
-  { key: "ch5", label: "Ch. 5", sublabel: "Quintuple", field: "ch5" as const },
-  { key: "ch4", label: "Ch. 4", sublabel: "Quadruple", field: "ch4" as const },
-  { key: "ch3", label: "Ch. 3", sublabel: "Triple",    field: "ch3" as const },
-  { key: "ch2", label: "Ch. 2", sublabel: "Double",    field: "ch2" as const },
-];
-
-const PILLARS = [
-  { icon: Shield,    title: "Visa Omra inclus",    desc: "Toutes les démarches administratives prises en charge" },
-  { icon: Users,     title: "Guide religieux",      desc: "Accompagnement spirituel par un guide algérien certifié" },
-  { icon: MapPin,    title: "Hôtels sélectionnés",  desc: "Établissements proches du Haram, soigneusement vérifiés" },
-  { icon: Calendar,  title: "Départs garantis",     desc: "Groupes constitués, départs confirmés depuis Alger" },
-];
-
 function fmt(n: number) {
   return n.toLocaleString("fr-DZ") + " DA";
 }
 
 export default function OmraContent() {
+  const { t } = useLang();
+
+  const ROOM_TYPES = [
+    { key: "ch5", label: t("omra_ch5_label"), sublabel: t("omra_ch5_sublabel"), field: "ch5" as const },
+    { key: "ch4", label: t("omra_ch4_label"), sublabel: t("omra_ch4_sublabel"), field: "ch4" as const },
+    { key: "ch3", label: t("omra_ch3_label"), sublabel: t("omra_ch3_sublabel"), field: "ch3" as const },
+    { key: "ch2", label: t("omra_ch2_label"), sublabel: t("omra_ch2_sublabel"), field: "ch2" as const },
+  ];
+
+  const PILLARS = [
+    { icon: Shield,   title: t("omra_pillar_1_title"), desc: t("omra_pillar_1_desc") },
+    { icon: Users,    title: t("omra_pillar_2_title"), desc: t("omra_pillar_2_desc") },
+    { icon: MapPin,   title: t("omra_pillar_3_title"), desc: t("omra_pillar_3_desc") },
+    { icon: Calendar, title: t("omra_pillar_4_title"), desc: t("omra_pillar_4_desc") },
+  ];
+
   const [selectedDep, setSelectedDep] = useState<number | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<string>("");
   const [form, setForm] = useState({
@@ -141,13 +144,13 @@ export default function OmraContent() {
         <div className="relative max-w-5xl mx-auto px-6 w-full">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}>
             <span className="inline-flex items-center gap-2 bg-[#C9943A]/20 border border-[#C9943A]/40 text-[#E8B85A] px-4 py-1.5 rounded-full text-sm font-medium mb-4 backdrop-blur-sm">
-              <Moon className="w-4 h-4" /> Voyages spirituels — Nisan 1448 H
+              <Moon className="w-4 h-4" /> {t("omra_page_badge")}
             </span>
-            <h1 className="font-display text-5xl sm:text-6xl font-bold text-white mb-4 leading-tight">
-              Programme Omra<br />Été 2025
+            <h1 className="font-display text-5xl sm:text-6xl font-bold text-white mb-4 leading-tight whitespace-pre-line">
+              {t("omra_page_title")}
             </h1>
             <p className="text-white/80 text-lg max-w-xl">
-              4 départs garantis depuis Alger · Air Algérie · La Mecque & Médine · Guide religieux inclus
+              {t("omra_page_subtitle")}
             </p>
           </motion.div>
         </div>
@@ -172,12 +175,12 @@ export default function OmraContent() {
       {/* ── Pricing Table ── */}
       <section className="max-w-6xl mx-auto px-6 py-20">
         <div className="text-center mb-12">
-          <span className="section-tag">Tarifs officiels</span>
+          <span className="section-tag">{t("omra_pricing_tag")}</span>
           <h2 className="font-display text-4xl font-bold text-[#1C1C1C] mt-3">
-            Programmes & Prix 2025
+            {t("omra_pricing_title")}
           </h2>
           <p className="text-[#6A6A6A] mt-3 max-w-xl mx-auto">
-            Air Algérie · Départ Alger · La Mecque + Médine · Visa + Transferts inclus
+            {t("omra_pricing_sub")}
           </p>
         </div>
 
@@ -186,15 +189,15 @@ export default function OmraContent() {
           <table className="w-full">
             <thead>
               <tr className="bg-[#1C1C1C] text-white">
-                <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Départ</th>
-                <th className="text-left px-4 py-4 text-xs font-semibold uppercase tracking-wider">Retour</th>
-                <th className="text-center px-4 py-4 text-xs font-semibold uppercase tracking-wider">Durée</th>
-                <th className="text-left px-4 py-4 text-xs font-semibold uppercase tracking-wider">Hôtel</th>
-                <th className="text-left px-4 py-4 text-xs font-semibold uppercase tracking-wider">Programme</th>
-                <th className="text-center px-4 py-4 text-xs font-semibold text-[#C9943A]">Ch. 5</th>
-                <th className="text-center px-4 py-4 text-xs font-semibold text-[#C9943A]">Ch. 4</th>
-                <th className="text-center px-4 py-4 text-xs font-semibold text-[#C9943A]">Ch. 3</th>
-                <th className="text-center px-4 py-4 text-xs font-semibold text-[#C9943A]">Ch. 2</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">{t("omra_table_depart")}</th>
+                <th className="text-left px-4 py-4 text-xs font-semibold uppercase tracking-wider">{t("omra_table_retour")}</th>
+                <th className="text-center px-4 py-4 text-xs font-semibold uppercase tracking-wider">{t("omra_table_duree")}</th>
+                <th className="text-left px-4 py-4 text-xs font-semibold uppercase tracking-wider">{t("omra_table_hotel")}</th>
+                <th className="text-left px-4 py-4 text-xs font-semibold uppercase tracking-wider">{t("omra_table_programme")}</th>
+                <th className="text-center px-4 py-4 text-xs font-semibold text-[#C9943A]">{t("omra_ch5_label")}</th>
+                <th className="text-center px-4 py-4 text-xs font-semibold text-[#C9943A]">{t("omra_ch4_label")}</th>
+                <th className="text-center px-4 py-4 text-xs font-semibold text-[#C9943A]">{t("omra_ch3_label")}</th>
+                <th className="text-center px-4 py-4 text-xs font-semibold text-[#C9943A]">{t("omra_ch2_label")}</th>
                 <th className="px-4 py-4"></th>
               </tr>
             </thead>
@@ -226,12 +229,12 @@ export default function OmraContent() {
                     <p className="text-[#8A8A8A] text-xs" dir="rtl">{d.hotelAr}</p>
                   </td>
                   <td className="px-4 py-5">
-                    {d.programme === "Petit déjeuner" ? (
+                    {d.programme === "breakfast" ? (
                       <span className="flex items-center gap-1.5 text-xs text-emerald-700 font-medium">
-                        <CheckCircle className="w-3.5 h-3.5 text-emerald-500" /> Petit déjeuner
+                        <CheckCircle className="w-3.5 h-3.5 text-emerald-500" /> {t("omra_breakfast")}
                       </span>
                     ) : (
-                      <span className="text-xs text-[#8A8A8A]">Logement seul</span>
+                      <span className="text-xs text-[#8A8A8A]">{t("omra_room_only")}</span>
                     )}
                   </td>
                   <td className="px-4 py-5 text-center">
@@ -254,7 +257,7 @@ export default function OmraContent() {
                     <a href="#inscription"
                       onClick={() => setForm(f => ({ ...f, package: `${d.depart} — ${d.hotel}` }))}
                       className="flex items-center gap-1.5 bg-[#C9943A] hover:bg-[#B8832A] text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors whitespace-nowrap">
-                      Réserver <ArrowRight className="w-3 h-3" />
+                      {t("omra_book_btn")} <ArrowRight className="w-3 h-3" />
                     </a>
                   </td>
                 </tr>
@@ -292,9 +295,9 @@ export default function OmraContent() {
                     <p className="text-xs text-[#8A8A8A]" dir="rtl">{d.hotelAr}</p>
                   </div>
                 </div>
-                {d.programme === "Petit déjeuner" && (
+                {d.programme === "breakfast" && (
                   <span className="inline-flex items-center gap-1 text-xs text-emerald-700 font-medium mt-1">
-                    <CheckCircle className="w-3 h-3" /> Petit déjeuner inclus
+                    <CheckCircle className="w-3 h-3" /> {t("omra_breakfast_included")}
                   </span>
                 )}
               </div>
@@ -315,7 +318,7 @@ export default function OmraContent() {
                 <a href="#inscription"
                   onClick={() => setForm(f => ({ ...f, package: `${d.depart} — ${d.hotel}` }))}
                   className="btn-primary justify-center py-3 text-sm w-full">
-                  Réserver ce départ <ArrowRight className="w-4 h-4" />
+                  {t("omra_book_depart")} <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
             </motion.div>
@@ -324,13 +327,13 @@ export default function OmraContent() {
 
         {/* Room type legend */}
         <div className="bg-white border border-[#E8E0D0] rounded-2xl p-5 mb-6">
-          <p className="text-xs font-semibold text-[#4A4A4A] uppercase tracking-wider mb-3">Légende des types de chambres</p>
+          <p className="text-xs font-semibold text-[#4A4A4A] uppercase tracking-wider mb-3">{t("omra_legend_title")}</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { code: "Ch. 2", desc: "Chambre double — 2 personnes" },
-              { code: "Ch. 3", desc: "Chambre triple — 3 personnes" },
-              { code: "Ch. 4", desc: "Chambre quadruple — 4 personnes" },
-              { code: "Ch. 5", desc: "Chambre quintuple — 5 personnes" },
+              { code: t("omra_ch2_label"), desc: t("omra_ch2_desc") },
+              { code: t("omra_ch3_label"), desc: t("omra_ch3_desc") },
+              { code: t("omra_ch4_label"), desc: t("omra_ch4_desc") },
+              { code: t("omra_ch5_label"), desc: t("omra_ch5_desc") },
             ].map((r) => (
               <div key={r.code} className="flex items-center gap-2">
                 <span className="shrink-0 font-bold text-[#C9943A] text-sm w-12">{r.code}</span>
@@ -344,14 +347,14 @@ export default function OmraContent() {
         <div className="bg-white border border-[#E8E0D0] rounded-2xl overflow-hidden">
           <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#E8E0D0] bg-[#FAFAF7]">
             <Baby className="w-4 h-4 text-[#C9943A]" />
-            <span className="font-semibold text-[#1C1C1C] text-sm">Tarifs enfants</span>
+            <span className="font-semibold text-[#1C1C1C] text-sm">{t("omra_children_title")}</span>
           </div>
           <table className="w-full">
             <thead>
               <tr className="bg-[#F5F0E8]">
-                <th className="text-left px-6 py-3 text-xs font-semibold text-[#4A4A4A] uppercase tracking-wider">Âge</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-[#4A4A4A] uppercase tracking-wider">Réduction / Tarif</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-[#4A4A4A] uppercase tracking-wider">Base de calcul</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-[#4A4A4A] uppercase tracking-wider">{t("omra_children_age")}</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-[#4A4A4A] uppercase tracking-wider">{t("omra_children_reduction")}</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-[#4A4A4A] uppercase tracking-wider">{t("omra_children_base")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F0EBE0]">
@@ -370,7 +373,7 @@ export default function OmraContent() {
           </table>
           <div className="px-6 py-3 bg-[#FAFAF7] border-t border-[#E8E0D0]">
             <p className="text-xs text-[#8A8A8A]">
-              * Les tarifs enfants s'appliquent avec accompagnement d'au moins un parent.
+              {t("omra_children_note")}
             </p>
           </div>
         </div>
@@ -379,13 +382,13 @@ export default function OmraContent() {
       {/* ── Why us ── */}
       <section className="bg-[#1C1C1C] py-20">
         <div className="max-w-5xl mx-auto px-6 text-center">
-          <span className="inline-block text-[#C9943A] text-sm font-semibold uppercase tracking-widest mb-4">Pourquoi nous choisir</span>
-          <h2 className="font-display text-4xl font-bold text-white mb-10">Un pèlerinage sans stress</h2>
+          <span className="inline-block text-[#C9943A] text-sm font-semibold uppercase tracking-widest mb-4">{t("omra_why_tag")}</span>
+          <h2 className="font-display text-4xl font-bold text-white mb-10">{t("omra_why_title")}</h2>
           <div className="grid sm:grid-cols-3 gap-8 text-left">
             {[
-              { n: "500+", label: "pèlerins accompagnés", sub: "depuis notre création" },
-              { n: "100%", label: "visa accordés",        sub: "aucun refus à ce jour" },
-              { n: "4.9★", label: "satisfaction client",  sub: "avis vérifiés" },
+              { n: "500+", label: t("omra_stat_1_label"), sub: t("omra_stat_1_sub") },
+              { n: "100%", label: t("omra_stat_2_label"), sub: t("omra_stat_2_sub") },
+              { n: "4.9★", label: t("omra_stat_3_label"), sub: t("omra_stat_3_sub") },
             ].map((s) => (
               <div key={s.label} className="border border-white/10 rounded-2xl p-6">
                 <div className="text-3xl font-bold text-[#C9943A] mb-1">{s.n}</div>
@@ -400,83 +403,83 @@ export default function OmraContent() {
       {/* ── Inscription form ── */}
       <section id="inscription" className="max-w-3xl mx-auto px-6 py-20">
         <div className="text-center mb-10">
-          <span className="section-tag">Inscription</span>
-          <h2 className="font-display text-3xl font-bold text-[#1C1C1C] mt-3">Réservez votre Omra</h2>
-          <p className="text-[#6A6A6A] mt-2">Remplissez le formulaire — nous vous recontactons sous 24h</p>
+          <span className="section-tag">{t("omra_form_tag")}</span>
+          <h2 className="font-display text-3xl font-bold text-[#1C1C1C] mt-3">{t("omra_form_title")}</h2>
+          <p className="text-[#6A6A6A] mt-2">{t("omra_form_sub")}</p>
         </div>
 
         {sent ? (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
             className="bg-emerald-50 border border-emerald-200 rounded-3xl p-10 text-center">
             <CheckCircle className="w-14 h-14 text-emerald-500 mx-auto mb-4" />
-            <h3 className="font-display text-2xl font-bold text-[#1C1C1C] mb-2">Demande reçue !</h3>
-            <p className="text-[#6A6A6A] mb-6">Notre équipe vous contacte dans les 24h via WhatsApp ou téléphone.</p>
+            <h3 className="font-display text-2xl font-bold text-[#1C1C1C] mb-2">{t("omra_success_title")}</h3>
+            <p className="text-[#6A6A6A] mb-6">{t("omra_success_desc")}</p>
             <a href={`https://wa.me/${SITE.phone.replace(/\D/g,"")}`} target="_blank" rel="noopener noreferrer"
               className="btn-primary justify-center py-3">
-              <MessageCircle className="w-4 h-4" /> Nous écrire sur WhatsApp
+              <MessageCircle className="w-4 h-4" /> {t("omra_success_wa")}
             </a>
           </motion.div>
         ) : (
           <form onSubmit={handleSubmit} className="card space-y-5">
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">Nom complet *</label>
+                <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">{t("omra_form_name")}</label>
                 <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                   className="form-input" placeholder="Votre nom" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">Téléphone / WhatsApp *</label>
+                <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">{t("omra_form_phone")}</label>
                 <input required value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
                   className="form-input" placeholder="+213 7XX XXX XXX" />
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">Email</label>
+              <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">{t("omra_form_email")}</label>
               <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                 className="form-input" placeholder="votre@email.com" />
             </div>
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">Départ souhaité *</label>
+                <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">{t("omra_form_depart")}</label>
                 <select required value={form.package} onChange={e => setForm(f => ({ ...f, package: e.target.value }))}
                   className="form-input">
-                  <option value="">Choisir un départ</option>
+                  <option value="">{t("omra_form_depart_ph")}</option>
                   {DEPARTURES.map(d => (
                     <option key={d.id} value={`${d.depart} — ${d.hotel}`}>
-                      {d.depart} · {d.hotel} · à partir de {fmt(d.ch5)}
+                      {d.depart} · {d.hotel} · {t("pkg_from")} {fmt(d.ch5)}
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">Type de chambre</label>
+                <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">{t("omra_form_room")}</label>
                 <select value={selectedRoom} onChange={e => setSelectedRoom(e.target.value)} className="form-input">
-                  <option value="">Choisir</option>
-                  <option value="ch5">Chambre 5 personnes (quintuple)</option>
-                  <option value="ch4">Chambre 4 personnes (quadruple)</option>
-                  <option value="ch3">Chambre 3 personnes (triple)</option>
-                  <option value="ch2">Chambre 2 personnes (double)</option>
+                  <option value="">{t("omra_form_room_ph")}</option>
+                  <option value="ch5">{t("omra_room_ch5")}</option>
+                  <option value="ch4">{t("omra_room_ch4")}</option>
+                  <option value="ch3">{t("omra_room_ch3")}</option>
+                  <option value="ch2">{t("omra_room_ch2")}</option>
                 </select>
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">Nombre de pèlerins</label>
+              <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">{t("omra_form_pilgrims")}</label>
               <select value={form.pilgrims} onChange={e => setForm(f => ({ ...f, pilgrims: e.target.value }))}
                 className="form-input">
                 {[1,2,3,4,5,6,7,8,9,10].map(n => (
-                  <option key={n} value={n}>{n} personne{n > 1 ? "s" : ""}</option>
+                  <option key={n} value={n}>{n} {n > 1 ? t("omra_persons") : t("omra_person")}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">Message (optionnel)</label>
+              <label className="block text-xs font-semibold text-[#4A4A4A] mb-1.5 uppercase tracking-wide">{t("omra_form_message")}</label>
               <textarea value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
                 rows={3} className="form-input resize-none"
-                placeholder="Questions sur le programme, enfants à bord, besoins spéciaux…" />
+                placeholder={t("omra_form_message_ph")} />
             </div>
             <button type="submit" disabled={loading}
               className="btn-primary w-full justify-center py-4 text-base disabled:opacity-60">
-              {loading ? "Envoi en cours…" : "Envoyer ma demande"}
+              {loading ? t("omra_form_sending") : t("omra_form_submit")}
             </button>
             <div className="flex items-center gap-4 pt-2 border-t border-[#E8E0D0]">
               <a href={`tel:${SITE.phone}`}

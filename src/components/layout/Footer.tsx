@@ -5,10 +5,14 @@ import Image from "next/image";
 import { Phone, Mail, MapPin, Share2, Globe, MessageCircle } from "lucide-react";
 import { SITE, DESTINATIONS } from "@/lib/constants";
 import { usePathname } from "next/navigation";
+import { useLang } from "@/contexts/LangContext";
 
 export default function Footer() {
   const pathname = usePathname();
+  const { t } = useLang();
+
   if (pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
+
   return (
     <footer className="bg-[#1C1C1C] border-t border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -19,7 +23,7 @@ export default function Footer() {
               <Image src="/logo.png" alt="Sun Evasion" height={44} width={100} className="h-11 w-auto object-contain brightness-0 invert" />
             </div>
             <p className="text-white/50 text-sm leading-relaxed mb-6">
-              Votre agence de voyage algérienne de confiance. Des séjours de rêve en Turquie et Tunisie, conçus pour vous.
+              {t("footer_desc")}
             </p>
             <div className="flex items-center gap-3">
               <a href={SITE.facebook} target="_blank" rel="noopener noreferrer"
@@ -39,7 +43,7 @@ export default function Footer() {
 
           {/* Destinations */}
           <div>
-            <h3 className="text-white/60 font-semibold mb-5 text-xs uppercase tracking-widest">Destinations</h3>
+            <h3 className="text-white/60 font-semibold mb-5 text-xs uppercase tracking-widest">{t("footer_destinations")}</h3>
             <ul className="space-y-3">
               {DESTINATIONS.map((d) => (
                 <li key={d.id}>
@@ -51,7 +55,7 @@ export default function Footer() {
               ))}
               <li>
                 <Link href="/voyages" className="text-[#C9943A] hover:text-[#E8B85A] text-sm transition-colors duration-200">
-                  Tous nos voyages →
+                  {t("footer_all_voyages")}
                 </Link>
               </li>
             </ul>
@@ -59,14 +63,15 @@ export default function Footer() {
 
           {/* Navigation */}
           <div>
-            <h3 className="text-white/60 font-semibold mb-5 text-xs uppercase tracking-widest">Navigation</h3>
+            <h3 className="text-white/60 font-semibold mb-5 text-xs uppercase tracking-widest">{t("footer_navigation")}</h3>
             <ul className="space-y-3">
               {[
-                { label: "Accueil", href: "/" },
-                { label: "Destinations", href: "/destinations" },
-                { label: "Voyages", href: "/voyages" },
-                { label: "À propos", href: "/a-propos" },
-                { label: "Contact", href: "/contact" },
+                { label: t("nav_home"), href: "/" },
+                { label: t("nav_destinations"), href: "/destinations" },
+                { label: t("nav_voyages"), href: "/voyages" },
+                { label: t("nav_omra"), href: "/omra" },
+                { label: t("nav_about"), href: "/a-propos" },
+                { label: t("nav_contact"), href: "/contact" },
               ].map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-white/50 hover:text-[#C9943A] text-sm transition-colors duration-200">
@@ -79,7 +84,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-white/60 font-semibold mb-5 text-xs uppercase tracking-widest">Contact</h3>
+            <h3 className="text-white/60 font-semibold mb-5 text-xs uppercase tracking-widest">{t("footer_contact")}</h3>
             <ul className="space-y-3">
               <li>
                 <a href={`tel:${SITE.phone}`} className="flex items-start gap-3 text-white/50 hover:text-[#C9943A] text-sm transition-colors duration-200">
@@ -126,9 +131,9 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-white/25 text-xs">
-            © {new Date().getFullYear()} Sun Evasion · Tous droits réservés
+            © {new Date().getFullYear()} Sun Evasion · {t("footer_rights")}
           </p>
-          <p className="text-white/20 text-xs">Agence agréée · Alger, Algérie</p>
+          <p className="text-white/20 text-xs">{t("footer_approved")}</p>
         </div>
       </div>
     </footer>
