@@ -552,37 +552,14 @@ export default function AdminDashboard() {
           </motion.div>
         )}
 
-        {/* ── VEILLE MARCHÉ (Apify) ── */}
+        {/* ── VEILLE MARCHÉ ── */}
         {activeTab === "veille" && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <div className="mb-8">
               <h1 className="font-display text-2xl font-bold text-[#1A1A1A]">Veille marché</h1>
               <p className="text-[#8A8A8A] text-sm mt-1">
-                Analysez vos concurrents et le marché grâce à Apify
+                Analysez les prix et offres de vos concurrents
               </p>
-            </div>
-
-            {/* Apify banner */}
-            <div className="bg-gradient-to-r from-[#FF6B35]/10 to-[#FF6B35]/5 border border-[#FF6B35]/20 rounded-2xl p-5 mb-8 flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-[#FF6B35] flex items-center justify-center shrink-0">
-                <Globe className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-[#1A1A1A] mb-1">Apify — Web Scraping</h3>
-                <p className="text-[#4A4A4A] text-sm mb-2">
-                  Extrayez automatiquement les prix et offres de vos concurrents. Ajoutez{" "}
-                  <code className="bg-white/60 px-1 py-0.5 rounded text-xs font-mono">APIFY_TOKEN</code>{" "}
-                  dans Vercel pour activer.
-                </p>
-                <a
-                  href="https://console.apify.com/account/integrations"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[#FF6B35] text-sm font-medium hover:underline"
-                >
-                  Obtenir votre token <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -637,89 +614,31 @@ export default function AdminDashboard() {
                 )}
               </div>
 
-              {/* Actors recommandés */}
+              {/* Sites de référence */}
               <div>
-                <h3 className="font-semibold text-[#1A1A1A] mb-4">Actors recommandés</h3>
+                <h3 className="font-semibold text-[#1A1A1A] mb-4">Sites à surveiller</h3>
                 <div className="space-y-3">
                   {[
-                    {
-                      name: "Booking.com Scraper",
-                      desc: "Prix des hôtels, disponibilités, avis — pour vos destinations Turquie & Tunisie",
-                      icon: "🏨",
-                      badge: "Populaire",
-                      url: "https://apify.com/voyager/booking-scraper",
-                    },
-                    {
-                      name: "TripAdvisor Scraper",
-                      desc: "Avis clients, notes, photos — analysez votre e-réputation et celle des concurrents",
-                      icon: "⭐",
-                      badge: "Avis",
-                      url: "https://apify.com/maxcopell/tripadvisor",
-                    },
-                    {
-                      name: "Google Maps Scraper",
-                      desc: "Agences de voyage concurrentes à Alger — infos, avis, contacts",
-                      icon: "📍",
-                      badge: "Local",
-                      url: "https://apify.com/compass/crawler-google-places",
-                    },
-                    {
-                      name: "Web Scraper",
-                      desc: "Scraping générique de n'importe quel site concurrent — prix, offres, promotions",
-                      icon: "🌐",
-                      badge: "Flexible",
-                      url: "https://apify.com/apify/web-scraper",
-                    },
-                  ].map((actor) => (
-                    <a
-                      key={actor.name}
-                      href={actor.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-start gap-3 bg-white border border-[#E8E0D0] rounded-xl p-4 hover:border-[#C9943A] hover:shadow-sm transition-all group"
-                    >
-                      <span className="text-2xl shrink-0">{actor.icon}</span>
+                    { name: "Booking.com Turquie", desc: "Prix hôtels, disponibilités et avis pour Istanbul, Antalya, Cappadoce", icon: "🏨", badge: "Hôtels", url: "https://www.booking.com/country/tr.fr.html" },
+                    { name: "TripAdvisor Algérie", desc: "Avis agences, e-réputation et classements des meilleures agences", icon: "⭐", badge: "Avis", url: "https://www.tripadvisor.fr/Tourism-g293713-Algeria-Vacations.html" },
+                    { name: "Booking.com Tunisie", desc: "Hôtels Djerba, Sousse, Hammamet — tarifs et disponibilités", icon: "🌊", badge: "Hôtels", url: "https://www.booking.com/country/tn.fr.html" },
+                    { name: "Skyscanner Alger", desc: "Suivi des prix billets d'avion Alger → Istanbul / Tunis", icon: "✈️", badge: "Vols", url: "https://www.skyscanner.fr/vols/alger/" },
+                  ].map((site) => (
+                    <a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-start gap-3 bg-white border border-[#E8E0D0] rounded-xl p-4 hover:border-[#C9943A] hover:shadow-sm transition-all group">
+                      <span className="text-2xl shrink-0">{site.icon}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-sm text-[#1A1A1A] group-hover:text-[#C9943A] transition-colors">
-                            {actor.name}
-                          </span>
-                          <span className="px-2 py-0.5 bg-[#F5F0E8] text-[#C9943A] text-xs rounded-full font-medium">
-                            {actor.badge}
-                          </span>
+                          <span className="font-semibold text-sm text-[#1A1A1A] group-hover:text-[#C9943A] transition-colors">{site.name}</span>
+                          <span className="px-2 py-0.5 bg-[#F5F0E8] text-[#C9943A] text-xs rounded-full font-medium">{site.badge}</span>
                         </div>
-                        <p className="text-xs text-[#4A4A4A] leading-relaxed">{actor.desc}</p>
+                        <p className="text-xs text-[#4A4A4A] leading-relaxed">{site.desc}</p>
                       </div>
                       <ExternalLink className="w-3.5 h-3.5 text-[#8A8A8A] shrink-0 mt-0.5 group-hover:text-[#C9943A] transition-colors" />
                     </a>
                   ))}
                 </div>
               </div>
-            </div>
-
-            {/* Setup guide */}
-            <div className="mt-8 bg-[#1C1C1C] rounded-2xl p-6">
-              <h3 className="font-semibold text-white mb-3">⚙️ Activer Apify en 2 étapes</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#C9943A] text-white text-xs flex items-center justify-center shrink-0 font-bold">1</span>
-                  <div>
-                    <p className="text-white/80">Créez un compte sur <a href="https://apify.com" target="_blank" rel="noopener noreferrer" className="text-[#C9943A] hover:underline">apify.com</a> et copiez votre API token</p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#C9943A] text-white text-xs flex items-center justify-center shrink-0 font-bold">2</span>
-                  <div>
-                    <p className="text-white/80 mb-2">Ajoutez dans les variables d&apos;environnement Vercel :</p>
-                    <div className="bg-black/40 rounded-lg px-4 py-3 font-mono text-xs text-emerald-400">
-                      APIFY_TOKEN=apify_api_xxxxxxxxxxxxxxxx
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p className="text-white/30 text-xs mt-4">
-                Après redéploiement, le bouton &quot;Lancer l&apos;analyse&quot; sera pleinement fonctionnel.
-              </p>
             </div>
           </motion.div>
         )}
