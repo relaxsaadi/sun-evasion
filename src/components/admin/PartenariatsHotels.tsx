@@ -344,23 +344,64 @@ export default function PartenariatsHotels() {
   const [scanResults, setScanResults] = useState<ScannedHotel[]>([]);
   const [scanError, setScanError] = useState("");
 
+  const [scanStatus, setScanStatus] = useState("");
+
   const runScan = async () => {
     setScanning(true);
     setScanError("");
     setScanResults([]);
+    setScanStatus("Démarrage du scan…");
+
     try {
-      const res = await fetch("/api/admin/hotel-scan", {
+      // 1. Start the run (fast — returns immediately)
+      const startRes = await fetch("/api/admin/hotel-scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: scanQuery, city: scanCity, country: scanCountry }),
       });
-      const data = await res.json();
-      if (data.error) setScanError(data.error);
-      else setScanResults(data.hotels || []);
+      const startData = await startRes.json();
+      if (startData.error) { setScanError(startData.error); setScanning(false); return; }
+
+      const { runId } = startData;
+      setScanStatus("Scan en cours… (peut prendre 1–2 min)");
+
+      // 2. Poll from browser every 6s — no Vercel timeout risk
+      let attempts = 0;
+      const maxAttempts = 25; // ~2.5 min max
+      const poll = async (): Promise<void> => {
+        attempts++;
+        if (attempts > maxAttempts) {
+          setScanError("Temps dépassé. Réessayez.");
+          setScanning(false);
+          return;
+        }
+        const res = await fetch(`/api/admin/hotel-scan/status?runId=${runId}`);
+        const data = await res.json();
+        if (data.error && data.status !== "RUNNING") {
+          setScanError(data.error);
+          setScanning(false);
+          return;
+        }
+        if (data.status === "SUCCEEDED") {
+          setScanResults(data.hotels || []);
+          setScanStatus("");
+          setScanning(false);
+          return;
+        }
+        if (["FAILED", "ABORTED", "TIMED-OUT"].includes(data.status)) {
+          setScanError(`Scan échoué (${data.status})`);
+          setScanning(false);
+          return;
+        }
+        // Still running — wait 6s and retry
+        await new Promise((r) => setTimeout(r, 6000));
+        return poll();
+      };
+      await poll();
     } catch {
       setScanError("Erreur réseau");
+      setScanning(false);
     }
-    setScanning(false);
   };
 
   const toggleContract = (id: string) => {
@@ -465,7 +506,7 @@ export default function PartenariatsHotels() {
           className="btn-primary py-2.5 px-6 text-sm disabled:opacity-60"
         >
           {scanning ? (
-            <><RefreshCw className="w-4 h-4 animate-spin" /> Scan en cours… (~60s)</>
+            <><RefreshCw className="w-4 h-4 animate-spin" /> {scanStatus || "Scan en cours…"}</>
           ) : (
             <><Search className="w-4 h-4" /> Lancer le scan</>
           )}
